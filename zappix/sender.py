@@ -5,6 +5,7 @@ Python implementation of Zabbix sender.
 from __future__ import print_function, unicode_literals, absolute_import
 import socket
 import argparse
+import json
 
 
 class sender(object):
@@ -22,14 +23,24 @@ class sender(object):
             print("Cannot connect to host.")
         finally:
             s.close()
+    
+    def create_single_request(self, host, key, value):
+        container = {"request": "sender data", "data": []}
+        payload = {"host": host, "key": key, "value": value}
+        container['data'].append(payload)
+
+        return json.dumps(container).encode('utf_8')
 
 
 if __name__ == '__main__':
     params = argparse.ArgumentParser()
-    params.add_argument('-z', '--zabbix', nargs=1)
+    params.add_argument('-z', '--zabbix', nargs='?')
     params.add_argument('-p', '--port', nargs='?', default=10051, type=int)
-    params.add_argument('-s', '--host', action="store_true")
-    params.add_argument('-k', '--key', action="store_true")
-    params.add_argument('-o', '--value', action="store_true")
+    params.add_argument('-s', '--host', nargs='?')
+    params.add_argument('-k', '--key', nargs='?')
+    params.add_argument('-o', '--value', nargs='?')
     args = params.parse_args()
+
+    zab = sender(args.zabbix, args.port)
+    zab.send(zab.create_single_request(args.host, args.key, args.value))
 
