@@ -19,7 +19,7 @@ class sender(object):
             s.connect((self.ip, self.port))
             s.send(payload)
             data = s.recv(124)
-        except ConnectionRefusedError:
+        except socket.error:
             print("Cannot connect to host.")
         finally:
             s.close()
