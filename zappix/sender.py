@@ -46,13 +46,6 @@ class Sender(object):
         resp = re.search('{.*}', response).group()
         return json.loads(resp)
 
-    def create_single_request(self, host, key, value):
-        container = {"request": "sender data", "data": []}
-        payload = {"host": host, "key": key, "value": value}
-        container['data'].append(payload)
-
-        return json.dumps(container).encode('utf_8')
-
 
 if __name__ == '__main__':
     import argparse
