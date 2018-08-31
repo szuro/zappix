@@ -38,7 +38,7 @@ class sender(object):
         data = b""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((self.ip, self.port))
-            s.send(payload)
+            s.sendall(payload)
             data = s.recv(256)
             return data.decode("utf_8")
 
