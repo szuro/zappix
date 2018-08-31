@@ -39,7 +39,7 @@ class sender(object):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.connect((self.ip, self.port))
             s.send(payload)
-            data = s.recv(124)
+            data = s.recv(256)
             return data.decode("utf_8")
 
     def create_single_request(self, host, key, value):
