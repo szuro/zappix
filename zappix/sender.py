@@ -4,7 +4,6 @@ Python implementation of Zabbix sender.
 
 from __future__ import print_function, unicode_literals, absolute_import
 import socket
-import argparse
 import json
 import re
 from copy import deepcopy
@@ -56,6 +55,7 @@ class sender(object):
 
 
 if __name__ == '__main__':
+    import argparse
     params = argparse.ArgumentParser()
     params.add_argument('-z', '--zabbix', nargs='?')
     params.add_argument('-p', '--port', nargs='?', default=10051, type=int)
