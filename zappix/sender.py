@@ -6,8 +6,9 @@ from __future__ import print_function, unicode_literals, absolute_import
 import socket
 import argparse
 import json
+import re
 from copy import deepcopy
-
+{"response":"success","info":"processed: 1; failed: 0; total: 1; seconds spent: 0.000054"}
 
 class sender(object):
 
@@ -40,7 +41,11 @@ class sender(object):
             s.connect((self.ip, self.port))
             s.sendall(payload)
             data = s.recv(256)
-            return data.decode("utf_8")
+            return self._parse_response(data.decode("utf_8"))
+
+    def _parse_response(self, response):
+        resp = re.search('{.*}', response).group()
+        return json.loads(resp)
 
     def create_single_request(self, host, key, value):
         container = {"request": "sender data", "data": []}
@@ -60,4 +65,5 @@ if __name__ == '__main__':
     args = params.parse_args()
 
     zab = sender(args.zabbix, args.port)
-    zab.send_value(args.host, args.key, args.value)
+    result = zab.send_value(args.host, args.key, args.value)
+    print('info from server: "{}"'.format(result['info']))
