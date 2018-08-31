@@ -36,10 +36,15 @@ class Sender(object):
 
     def _send(self, payload):
         data = b""
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
             s.connect((self.ip, self.port))
             s.sendall(payload)
             data = s.recv(256)
+        except socket.error:
+            print("Cannot connect to host.")
+        finally:
+            s.close()
             return self._parse_response(data.decode("utf_8"))
 
     def _parse_response(self, response):
