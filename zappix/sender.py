@@ -8,7 +8,7 @@ import argparse
 import json
 import re
 from copy import deepcopy
-{"response":"success","info":"processed: 1; failed: 0; total: 1; seconds spent: 0.000054"}
+
 
 class sender(object):
 
