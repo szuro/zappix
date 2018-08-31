@@ -9,7 +9,7 @@ import re
 from copy import deepcopy
 
 
-class sender(object):
+class Sender(object):
 
     _container = {"request": "sender data", "data": []}
 
@@ -64,6 +64,6 @@ if __name__ == '__main__':
     params.add_argument('-o', '--value', nargs='?')
     args = params.parse_args()
 
-    zab = sender(args.zabbix, args.port)
+    zab = Sender(args.zabbix, args.port)
     result = zab.send_value(args.host, args.key, args.value)
     print('info from server: "{}"'.format(result['info']))
