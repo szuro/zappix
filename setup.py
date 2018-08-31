@@ -24,6 +24,9 @@ setup(
     author_email='r.szulist@gmail.com',
     classifiers=[
         'Development Status :: 3 - Alpha',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 3.6',
+        'Topic :: System :: Monitoring',
         'License :: OSI Approved :: MIT License',
     ],
     keywords='zabbix get sender',
