@@ -14,8 +14,8 @@ class Sender(object):
     _container = {"request": "sender data", "data": []}
 
     def __init__(self, ip, port=10051):
-        self.ip = ip
-        self.port = port
+        self._ip = ip
+        self._port = port
 
     def send_value(self, host, key, value):
         payload = {
@@ -38,7 +38,7 @@ class Sender(object):
         data = b""
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            s.connect((self.ip, self.port))
+            s.connect((self._ip, self._port))
             s.sendall(payload)
             data = s.recv(256)
         except socket.error:
