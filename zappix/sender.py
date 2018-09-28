@@ -2,50 +2,80 @@
 Python implementation of Zabbix sender.
 """
 
-from __future__ import print_function, unicode_literals, absolute_import
+from __future__ import print_function, unicode_literals, absolute_import, division
 import socket
 import json
-import re
-from copy import deepcopy
+import re, os
+import csv
+import time
 
 
 class Sender(object):
 
-    _container = {"request": "sender data", "data": []}
-
-    def __init__(self, ip, port=10051):
+    def __init__(self, ip, port=10051, source_address=None):
         self._ip = ip
         self._port = port
+        self._source_address = source_address
 
     def send_value(self, host, key, value):
         payload = {
-            "host": host,
-            "key": key,
-            "value": value
-        }
+            "request":"sender data",
+            "data":[]
+            }
 
-        full_crate = json.dumps(
-                self._pack_payload(payload)
-            ).encode('utf_8')
-        return self._send(full_crate)
+        payload["data"].append(
+            self._create_payload(host, key, value)
+            )
 
-    def _pack_payload(self, payload):
-        crate = deepcopy(self._container)
-        crate['data'].append(payload)
-        return crate
+        return self._send(json.dumps(payload).encode("utf-8"))
+
+    def send_file(self, file, with_timestamps=False):
+        return self._send(self._parse_file(file, with_timestamps))
 
     def _send(self, payload):
         data = b""
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             s.connect((self._ip, self._port))
+            if self._source_address:
+                s.bind((self._source_address, 0))
+            # for item in payload:
             s.sendall(payload)
             data = s.recv(256)
+            print(data)
         except socket.error:
             print("Cannot connect to host.")
         finally:
             s.close()
             return self._parse_response(data.decode("utf_8"))
+
+    def _parse_file(self, file, with_timestamps=False):
+        with open(file, 'r', encoding='utf-8') as values:
+            payload =  {"request":"sender data","data":[]}
+            reader = csv.reader(values, delimiter=' ')
+
+            for row in reader:
+                if with_timestamps:
+                    payload["data"].append(self._create_payload(row[0], row[1], row[2], row[4]))
+                else:
+                    payload["data"].append(self._create_payload(row[0], row[1], row[2]))
+
+        if with_timestamps:
+            now = time.time()
+            payload["clock"] = int(now//1)
+            payload["ns"] = int(now%1 * 1e9)
+
+        return json.dumps(payload).encode("utf-8")
+
+    def _create_payload(self, host, key, value, timestamp=None):
+        payload = {
+            "host": host,
+            "key": key,
+            "value": str(value)
+        }
+        if timestamp:
+            payload["clock"] = timestamp
+        return payload
 
     def _parse_response(self, response):
         resp = re.search('{.*}', response).group()
