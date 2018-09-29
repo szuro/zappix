@@ -3,19 +3,16 @@ Python implementation of Zabbix sender.
 """
 
 from __future__ import print_function, unicode_literals, absolute_import, division
-import socket
+from zappix.dstream import Dstream
 import json
-import re, os
 import csv
 import time
 
 
-class Sender(object):
+class Sender(Dstream):
 
-    def __init__(self, ip, port=10051, source_address=None):
-        self._ip = ip
-        self._port = port
-        self._source_address = source_address
+    def __init__(self, server, port=10051, source_address=None):
+        super().__init__(server, port, source_address)
 
     def send_value(self, host, key, value):
         payload = {
@@ -31,23 +28,6 @@ class Sender(object):
 
     def send_file(self, file, with_timestamps=False):
         return self._send(self._parse_file(file, with_timestamps))
-
-    def _send(self, payload):
-        data = b""
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            s.connect((self._ip, self._port))
-            if self._source_address:
-                s.bind((self._source_address, 0))
-            # for item in payload:
-            s.sendall(payload)
-            data = s.recv(256)
-            print(data)
-        except socket.error:
-            print("Cannot connect to host.")
-        finally:
-            s.close()
-            return self._parse_response(data.decode("utf_8"))
 
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:
@@ -76,10 +56,6 @@ class Sender(object):
         if timestamp:
             payload["clock"] = timestamp
         return payload
-
-    def _parse_response(self, response):
-        resp = re.search('{.*}', response).group()
-        return json.loads(resp)
 
 
 if __name__ == '__main__':
