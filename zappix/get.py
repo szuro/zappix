@@ -13,3 +13,16 @@ class Get(object):
 
     def get_report(self, keys):
         pass
+
+
+if __name__ == '__main__':
+    import argparse
+    params = argparse.ArgumentParser()
+    params.add_argument('-s', '--host', nargs='?')
+    params.add_argument('-p', '--port', nargs='?', default=10050, type=int)
+    params.add_argument('-k', '--key', nargs='?')
+    args = params.parse_args()
+
+    zab = Get(args.zabbix, args.port)
+    result = zab.get_value(args.key)
+    print(result['info'])
