@@ -3,13 +3,16 @@ from zappix.dstream import Dstream
 import json
 
 
-class Get(object):
+class Get(Dstream):
 
     def __init__(self, host, port=10050, source_address=None):
         super().__init__(host, port, source_address)
 
     def get_value(self, key):
-        pass
+        payload = key + "\n"
+        payload = payload.encode('utf-8')
+
+        return self._send(payload)
 
     def get_report(self, keys):
         pass
