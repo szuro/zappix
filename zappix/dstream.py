@@ -35,9 +35,7 @@ class Dstream(object):
             response[13:13+length]
             )
         return data[0].decode('utf-8')
-        #resp = re.search('{.*}', response).group()
-        #return json.loads(resp)
-    
+
     def _prepare_payload(self, payload):
         packed = struct.pack(
             '<5sQ{}s'.format(len(payload)),
