@@ -1,5 +1,6 @@
 from __future__ import print_function, unicode_literals, absolute_import, division
 import socket
+import struct
 import re
 import json
 
@@ -18,14 +19,30 @@ class Dstream(object):
             if self._source_address:
                 s.bind((self._source_address, 0))
             # for item in payload:
-            s.sendall(payload)
+            packed = self._prepare_payload(payload)
+            s.sendall(packed)
             data = s.recv(256)
         except socket.error:
             print("Cannot connect to host.")
         finally:
             s.close()
-            return self._parse_response(data.decode("utf_8"))
+            return self._parse_response(data)
 
     def _parse_response(self, response):
-        resp = re.search('{.*}', response).group()
-        return json.loads(resp)
+        _, length = struct.unpack('<5sQ', response[:13])
+        data = struct.unpack(
+            '<{}s'.format(length),
+            response[13:13+length]
+            )
+        return data[0].decode('utf-8')
+        #resp = re.search('{.*}', response).group()
+        #return json.loads(resp)
+    
+    def _prepare_payload(self, payload):
+        packed = struct.pack(
+            '<5sQ{}s'.format(len(payload)),
+            b'ZBXD\x01',
+            len(payload),
+            payload
+            )
+        return packed
