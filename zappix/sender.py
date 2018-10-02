@@ -16,8 +16,8 @@ class Sender(Dstream):
 
     def send_value(self, host, key, value):
         payload = {
-            "request":"sender data",
-            "data":[]
+            "request": "sender data",
+            "data": []
             }
 
         payload["data"].append(
@@ -31,7 +31,7 @@ class Sender(Dstream):
 
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:
-            payload =  {"request":"sender data","data":[]}
+            payload = {"request": "sender data", "data": []}
             reader = csv.reader(values, delimiter=' ')
 
             for row in reader:
@@ -43,7 +43,7 @@ class Sender(Dstream):
         if with_timestamps:
             now = time.time()
             payload["clock"] = int(now//1)
-            payload["ns"] = int(now%1 * 1e9)
+            payload["ns"] = int(now % 1 * 1e9)
 
         return json.dumps(payload).encode("utf-8")
 
