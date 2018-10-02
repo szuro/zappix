@@ -35,17 +35,15 @@ class SenderValueTest(unittest.TestCase):
         self.assertIsNotNone(resp)
         self.assertRegex(resp, r"processed: 0; failed: 1; total: 1; seconds spent: [0-9]+.[0-9]+")
 
-    @unittest.skip
     def test_bad_server(self):
         sender = Sender('127.0.0.2')
         resp = sender.send_value('testhost', 'test', 1)
-        self.assertIsNotNone(resp)
+        self.assertIsNone(resp)
 
-    @unittest.skip
     def test_bad_port(self):
         sender = Sender(self.server, 666)
         resp = sender.send_value('testhost', 'test', 1)
-        self.assertIsNotNone(resp)
+        self.assertIsNone(resp)
 
 
 class SenderFileTest(unittest.TestCase):
