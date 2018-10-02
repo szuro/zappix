@@ -22,11 +22,13 @@ class Dstream(object):
             packed = self._prepare_payload(payload)
             s.sendall(packed)
             data = s.recv(256)
+            parsed = self._parse_response(data)
         except socket.error:
             print("Cannot connect to host.")
+            parsed = None
         finally:
             s.close()
-            return self._parse_response(data)
+            return parsed
 
     def _parse_response(self, response):
         _, length = struct.unpack('<5sQ', response[:13])
