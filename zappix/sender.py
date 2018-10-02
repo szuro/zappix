@@ -63,11 +63,22 @@ if __name__ == '__main__':
     params = argparse.ArgumentParser()
     params.add_argument('-z', '--zabbix', nargs='?')
     params.add_argument('-p', '--port', nargs='?', default=10051, type=int)
+    params.add_argument('-I', '--source-address', nargs='?')
     params.add_argument('-s', '--host', nargs='?')
     params.add_argument('-k', '--key', nargs='?')
     params.add_argument('-o', '--value', nargs='?')
+    params.add_argument('-i', '--input-file', nargs='?')
+    params.add_argument('-T', '--with-timestamps', action='store_true')
     args = params.parse_args()
 
-    zab = Sender(args.zabbix, args.port)
-    result = zab.send_value(args.host, args.key, args.value)
+    if args.source_address:
+        zab = Sender(args.zabbix, args.port, args.source_address)
+    else:
+        zab = Sender(args.zabbix, args.port)
+
+    if all(args.host, args.key, args.value):
+        result = zab.send_value(args.host, args.key, args.value)
+    elif args.input_file:
+        result = zab.send_file(args.input_file, True if args.with_timestamps else False)
+
     print('info from server: "{}"'.format(result['info']))
