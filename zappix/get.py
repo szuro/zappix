@@ -24,9 +24,14 @@ if __name__ == '__main__':
     params = argparse.ArgumentParser()
     params.add_argument('-s', '--host', nargs='?')
     params.add_argument('-p', '--port', nargs='?', default=10050, type=int)
+    params.add_argument('-I', '--source-address', nargs='?')
     params.add_argument('-k', '--key', nargs='?')
     args = params.parse_args()
 
-    zab = Get(args.zabbix, args.port)
+    if args.source_address:
+        zab = Get(args.zabbix, args.port, args.source_address)
+    else:
+        zab = Get(args.zabbix, args.port)
+
     result = zab.get_value(args.key)
     print(result['info'])
