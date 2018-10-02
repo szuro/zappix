@@ -15,7 +15,8 @@ class Get(Dstream):
         return self._send(payload)
 
     def get_report(self, keys):
-        pass
+        report = {key:self._send((key + '\n').encode('utf-8')) for key in keys}
+        return report
 
 
 if __name__ == '__main__':
