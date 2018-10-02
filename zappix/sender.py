@@ -36,7 +36,7 @@ class Sender(Dstream):
 
             for row in reader:
                 if with_timestamps:
-                    payload["data"].append(self._create_payload(row[0], row[1], row[2], row[4]))
+                    payload["data"].append(self._create_payload(row[0], row[1], row[3], row[2]))
                 else:
                     payload["data"].append(self._create_payload(row[0], row[1], row[2]))
 
