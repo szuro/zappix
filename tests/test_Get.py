@@ -1,7 +1,6 @@
 import unittest
 import configparser
 import os
-import tempfile
 from zappix.get import Get
 
 
