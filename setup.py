@@ -15,8 +15,8 @@ with open(path.join(here, 'README.md'), 'r', encoding='utf-8') as f:
 
 setup(
     name='zappix',
-    version='0.0.1',
-    description='Package for polarization state calculations',
+    version='0.0.2',
+    description='A Python replacement for Zabbix sender and get.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/szuro/zappix',
@@ -24,7 +24,6 @@ setup(
     author_email='r.szulist@gmail.com',
     classifiers=[
         'Development Status :: 3 - Alpha',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 3.6',
         'Topic :: System :: Monitoring',
         'License :: OSI Approved :: MIT License',
