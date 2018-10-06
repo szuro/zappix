@@ -32,4 +32,4 @@ if __name__ == '__main__':
         zab = Get(args.host, args.port)
 
     result = zab.get_value(args.key)
-    print(result['info'])
+    print(result)
