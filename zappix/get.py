@@ -27,9 +27,9 @@ if __name__ == '__main__':
     args = params.parse_args()
 
     if args.source_address:
-        zab = Get(args.zabbix, args.port, args.source_address)
+        zab = Get(args.host, args.port, args.source_address)
     else:
-        zab = Get(args.zabbix, args.port)
+        zab = Get(args.host, args.port)
 
     result = zab.get_value(args.key)
     print(result['info'])
