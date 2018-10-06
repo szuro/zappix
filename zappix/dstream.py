@@ -15,7 +15,7 @@ class Dstream(object):
             if self._source_address:
                 s.bind((self._source_address, 0))
             s.connect((self._ip, self._port))
-            # for item in payload:
+
             packed = self._prepare_payload(payload)
             s.sendall(packed)
             data = s.recv(256)
