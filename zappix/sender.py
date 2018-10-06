@@ -80,4 +80,4 @@ if __name__ == '__main__':
     elif args.input_file:
         result = zab.send_file(args.input_file, True if args.with_timestamps else False)
 
-    print('info from server: "{}"'.format(result['info']))
+    print('info from server: "{}"'.format(result))
