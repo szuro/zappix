@@ -12,9 +12,9 @@ class Dstream(object):
         data = b""
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            s.connect((self._ip, self._port))
             if self._source_address:
                 s.bind((self._source_address, 0))
+            s.connect((self._ip, self._port))
             # for item in payload:
             packed = self._prepare_payload(payload)
             s.sendall(packed)
