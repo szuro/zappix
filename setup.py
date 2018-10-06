@@ -29,6 +29,5 @@ setup(
         'License :: OSI Approved :: MIT License',
     ],
     keywords='zabbix get sender',
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    install_requires=['numpy'],
+    packages=find_packages(exclude=['contrib', 'docs', 'tests'])
 )
