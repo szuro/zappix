@@ -75,7 +75,7 @@ if __name__ == '__main__':
     else:
         zab = Sender(args.zabbix, args.port)
 
-    if all(args.host, args.key, args.value):
+    if all([args.host, args.key, args.value]):
         result = zab.send_value(args.host, args.key, args.value)
     elif args.input_file:
         result = zab.send_file(args.input_file, True if args.with_timestamps else False)
