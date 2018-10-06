@@ -24,3 +24,13 @@ class GetValueTest(unittest.TestCase):
     def test_get_report(self):
         resp = self.get.get_report(['agent.ping', 'agent.pong'])
         self.assertDictEqual(resp, {'agent.ping': '1', 'agent.pong': 'ZBX_NOTSUPPORTED\x00Unsupported item key.'})
+
+
+class GetValueWithBoundAddressTest(GetValueTest):
+    def setUp(self):
+        config = configparser.ConfigParser()
+        this_path = os.path.dirname(os.path.abspath(__file__))
+        config.read(os.path.join(this_path, 'test.ini'))
+        self.agent = config['agent']['good']
+
+        self.get = Get(self.agent, source_address=config['agent']['good'])

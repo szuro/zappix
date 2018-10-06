@@ -86,3 +86,13 @@ class SenderFileTest(unittest.TestCase):
 
     def test_send_corrupted_file_with_timestamps(self):
         pass
+
+
+class SenderValueWithBoundAddressTest(unittest.TestCase):
+    def setUp(self):
+        config = configparser.ConfigParser()
+        this_path = os.path.dirname(os.path.abspath(__file__))
+        config.read(os.path.join(this_path, 'test.ini'))
+        self.server = config['server']['good']
+
+        self.sender = Sender(self.server, source_address=config['agent']['good'])
