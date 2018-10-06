@@ -19,7 +19,7 @@ setup(
     description='A Python replacement for Zabbix sender and get.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/szuro/zappix',
+    url='https://gitlab.com/szuro/zappix',
     author='Robert Szulist',
     author_email='r.szulist@gmail.com',
     classifiers=[
