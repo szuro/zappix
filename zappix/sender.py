@@ -77,7 +77,7 @@ class Sender(Dstream):
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:
             payload = {"request": "sender data", "data": []}
-            reader = csv.reader(values, delimiter=' ')
+            reader = csv.reader(values, delimiter=' ', skipinitialspace=True)
 
             for row in reader:
                 if with_timestamps:

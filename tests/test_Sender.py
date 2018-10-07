@@ -58,8 +58,8 @@ class SenderFileTest(unittest.TestCase):
     def test_send_file(self):
         file_ = tempfile.NamedTemporaryFile('w+', delete=False)
         file_.write("testhost test 1\n"
-                    "testhost test 2\n"
-                    "testhost test 3\n")
+                    "testhost test  2\n"
+                    "testhost test   3\n")
         file_.close()
         resp = self.sender.send_file(file_.name)
         os.unlink(file_.name)
@@ -72,8 +72,8 @@ class SenderFileTest(unittest.TestCase):
     def test_send_file_with_timestamps(self):
         file_with_timestamps = tempfile.NamedTemporaryFile('w+', delete=False)
         file_with_timestamps.write("testhost test {t} 10\n"
-                                   "testhost test {t} 20\n"
-                                   "testhost test {t} 30\n".format(t=int(time.time()//1)))
+                                   "testhost test  {t}  20\n"
+                                   "testhost   test {t} 30\n".format(t=int(time.time()//1)))
         file_with_timestamps.close()
         resp = self.sender.send_file(file_with_timestamps.name, with_timestamps=True)
         os.unlink(file_with_timestamps.name)
