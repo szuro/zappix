@@ -71,26 +71,35 @@ class Sender(Dstream):
         string
             Information from server.
         """
-        response = self._send(self._parse_file(file, with_timestamps))
-        return self._parse_server_info(response)
+        payload, corrupted_lines = self._parse_file(file, with_timestamps)
+        response = self._send(payload)
+        return self._parse_server_info(response), corrupted_lines
 
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:
             payload = {"request": "sender data", "data": []}
             reader = csv.reader(values, delimiter=' ', skipinitialspace=True)
+            failed_lines = []
 
             for row in reader:
-                if with_timestamps:
-                    payload["data"].append(self._create_payload(row[0], row[1], row[3], row[2]))
+                try:
+                    if with_timestamps:
+                        data = self._create_payload(row[0], row[1], row[3], row[2])
+                    else:
+                        data = self._create_payload(row[0], row[1], row[2])
+                except IndexError:
+                    failed_lines.append(reader.line_num)
                 else:
-                    payload["data"].append(self._create_payload(row[0], row[1], row[2]))
-
+                    if all(row):
+                        payload["data"].append(data)
+                    else:
+                        failed_lines.append(reader.line_num)
         if with_timestamps:
             now = time.time()
             payload["clock"] = int(now//1)
             payload["ns"] = int(now % 1 * 1e9)
 
-        return json.dumps(payload).encode("utf-8")
+        return json.dumps(payload).encode("utf-8"), failed_lines
 
     def _create_payload(self, host, key, value, timestamp=None):
         payload = {
@@ -131,6 +140,6 @@ if __name__ == '__main__':
     if all([args.host, args.key, args.value]):
         result = zab.send_value(args.host, args.key, args.value)
     elif args.input_file:
-        result = zab.send_file(args.input_file, True if args.with_timestamps else False)
+        result, corrupted_lines = zab.send_file(args.input_file, True if args.with_timestamps else False)
 
     print('info from server: "{}"'.format(result))

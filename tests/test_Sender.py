@@ -61,13 +61,23 @@ class SenderFileTest(unittest.TestCase):
                     "testhost test  2\n"
                     "testhost test   3\n")
         file_.close()
-        resp = self.sender.send_file(file_.name)
+        resp, _ = self.sender.send_file(file_.name)
         os.unlink(file_.name)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
     def test_send_corrupted_file(self):
-        pass
+        file_ = tempfile.NamedTemporaryFile('w+', delete=False)
+        file_.write("testhost test 1\n"
+                    "testhost test\n"
+                    "testhost test \n"
+                    "testhost test 3\n")
+        file_.close()
+        resp, corrupted_lines = self.sender.send_file(file_.name)
+        os.unlink(file_.name)
+        self.assertSequenceEqual(corrupted_lines, [2, 3])
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
 
     def test_send_file_with_timestamps(self):
         file_with_timestamps = tempfile.NamedTemporaryFile('w+', delete=False)
@@ -75,13 +85,23 @@ class SenderFileTest(unittest.TestCase):
                                    "testhost test  {t}  20\n"
                                    "testhost   test {t} 30\n".format(t=int(time.time()//1)))
         file_with_timestamps.close()
-        resp = self.sender.send_file(file_with_timestamps.name, with_timestamps=True)
+        resp, _ = self.sender.send_file(file_with_timestamps.name, with_timestamps=True)
         os.unlink(file_with_timestamps.name)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
     def test_send_corrupted_file_with_timestamps(self):
-        pass
+        file_ = tempfile.NamedTemporaryFile('w+', delete=False)
+        file_.write("testhost test {t} 10\n"
+                    "testhost test\n"
+                    "testhost   test {t} \n"
+                    "testhost test {t} 2\n".format(t=int(time.time()//1)))
+        file_.close()
+        resp, corrupted_lines = self.sender.send_file(file_.name, with_timestamps=True)
+        os.unlink(file_.name)
+        self.assertSequenceEqual(corrupted_lines, [2, 3])
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
 
 
 class SenderValueWithBoundAddressTest(unittest.TestCase):
