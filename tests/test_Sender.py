@@ -55,24 +55,14 @@ class SenderFileTest(unittest.TestCase):
 
         self.sender = Sender(self.server)
 
-        self.file = tempfile.NamedTemporaryFile('w+', delete=False)
-        self.file.write("testhost test 1\n"
-                        "testhost test 2\n"
-                        "testhost test 3\n")
-        self.file.close()
-
-        self.file_with_timestamps = tempfile.NamedTemporaryFile('w+', delete=False)
-        self.file_with_timestamps.write("testhost test {t} 10\n"
-                                        "testhost test {t} 20\n"
-                                        "testhost test {t} 30\n".format(t=int(time.time()//1)))
-        self.file_with_timestamps.close()
-
-    def tearDown(self):
-        os.unlink(self.file.name)
-        os.unlink(self.file_with_timestamps.name)
-
     def test_send_file(self):
-        resp = self.sender.send_file(self.file.name)
+        file_ = tempfile.NamedTemporaryFile('w+', delete=False)
+        file_.write("testhost test 1\n"
+                    "testhost test 2\n"
+                    "testhost test 3\n")
+        file_.close()
+        resp = self.sender.send_file(file_.name)
+        os.unlink(file_.name)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
@@ -80,7 +70,13 @@ class SenderFileTest(unittest.TestCase):
         pass
 
     def test_send_file_with_timestamps(self):
-        resp = self.sender.send_file(self.file_with_timestamps.name, with_timestamps=True)
+        file_with_timestamps = tempfile.NamedTemporaryFile('w+', delete=False)
+        file_with_timestamps.write("testhost test {t} 10\n"
+                                   "testhost test {t} 20\n"
+                                   "testhost test {t} 30\n".format(t=int(time.time()//1)))
+        file_with_timestamps.close()
+        resp = self.sender.send_file(file_with_timestamps.name, with_timestamps=True)
+        os.unlink(file_with_timestamps.name)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
