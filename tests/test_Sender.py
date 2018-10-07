@@ -80,13 +80,13 @@ class SenderFileTest(unittest.TestCase):
         self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
 
     def test_send_file_with_timestamps(self):
-        file_with_timestamps = tempfile.NamedTemporaryFile('w+', delete=False)
-        file_with_timestamps.write("testhost test {t} 10\n"
-                                   "testhost test  {t}  20\n"
-                                   "testhost   test {t} 30\n".format(t=int(time.time()//1)))
-        file_with_timestamps.close()
-        resp, _ = self.sender.send_file(file_with_timestamps.name, with_timestamps=True)
-        os.unlink(file_with_timestamps.name)
+        file_ = tempfile.NamedTemporaryFile('w+', delete=False)
+        file_.write("testhost test {t} 10\n"
+                    "testhost test  {t}  20\n"
+                    "testhost   test {t} 30\n".format(t=int(time.time()//1)))
+        file_.close()
+        resp, _ = self.sender.send_file(file_.name, with_timestamps=True)
+        os.unlink(file_.name)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
