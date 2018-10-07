@@ -10,6 +10,7 @@ class Dstream(object):
 
     def _send(self, payload):
         data = b""
+        parsed = None
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             if self._source_address:
@@ -22,7 +23,8 @@ class Dstream(object):
             parsed = self._parse_response(data)
         except socket.error:
             print("Cannot connect to host.")
-            parsed = None
+        except struct.error:
+            print("Invalid response.")
         finally:
             s.close()
             return parsed
