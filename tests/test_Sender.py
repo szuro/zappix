@@ -17,23 +17,23 @@ class SenderValueTest(unittest.TestCase):
 
     def test_single_value(self):
         resp = self.sender.send_value('testhost', 'test', 1)
-        self.assertIsNotNone(resp)
-        self.assertRegex(resp, r"processed: 1; failed: 0; total: 1; seconds spent: [0-9]+.[0-9]+")
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 1, "failed": 0, "total": 1})
 
     def test_bad_value(self):
         resp = self.sender.send_value('testhost', 'test', "bad_value")
-        self.assertIsNotNone(resp)
-        self.assertRegex(resp, r"processed: 0; failed: 1; total: 1; seconds spent: [0-9]+.[0-9]+")
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
     def test_bad_key(self):
         resp = self.sender.send_value('testhost', 'bad_key', 1)
-        self.assertIsNotNone(resp)
-        self.assertRegex(resp, r"processed: 0; failed: 1; total: 1; seconds spent: [0-9]+.[0-9]+")
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
     def test_bad_hostname(self):
         resp = self.sender.send_value('bad_host', 'test', 1)
-        self.assertIsNotNone(resp)
-        self.assertRegex(resp, r"processed: 0; failed: 1; total: 1; seconds spent: [0-9]+.[0-9]+")
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
     def test_bad_server(self):
         sender = Sender('127.0.0.2')
@@ -73,16 +73,16 @@ class SenderFileTest(unittest.TestCase):
 
     def test_send_file(self):
         resp = self.sender.send_file(self.file.name)
-        self.assertIsNotNone(resp)
-        self.assertRegex(resp, r"processed: 3; failed: 0; total: 3; seconds spent: [0-9]+.[0-9]+")
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
     def test_send_corrupted_file(self):
         pass
 
     def test_send_file_with_timestamps(self):
         resp = self.sender.send_file(self.file_with_timestamps.name, with_timestamps=True)
-        self.assertIsNotNone(resp)
-        self.assertRegex(resp, r"processed: 3; failed: 0; total: 3; seconds spent: [0-9]+.[0-9]+")
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
     def test_send_corrupted_file_with_timestamps(self):
         pass

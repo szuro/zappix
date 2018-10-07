@@ -52,7 +52,8 @@ class Sender(Dstream):
             self._create_payload(host, key, value)
             )
 
-        return self._send(json.dumps(payload).encode("utf-8"))
+        response = self._send(json.dumps(payload).encode("utf-8"))
+        return self._parse_server_info(response)
 
     def send_file(self, file, with_timestamps=False):
         """
@@ -70,7 +71,8 @@ class Sender(Dstream):
         string
             Information from server.
         """
-        return self._send(self._parse_file(file, with_timestamps))
+        response = self._send(self._parse_file(file, with_timestamps))
+        return self._parse_server_info(response)
 
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:
@@ -102,7 +104,8 @@ class Sender(Dstream):
 
     def _parse_server_info(self, resp):
         if resp:
-            parts = (part.split(': ') for part in resp.split('; '))
+            loaded = json.loads(resp)
+            parts = (part.split(': ') for part in loaded["info"].split('; '))
             parsed = {k: eval(v) for k, v in parts}
             return parsed
 
