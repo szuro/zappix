@@ -100,7 +100,7 @@ class Sender(Dstream):
             payload["clock"] = timestamp
         return payload
 
-    def _parse_response(self, resp):
+    def _parse_server_info(self, resp):
         if resp:
             parts = (part.split(': ') for part in resp.split('; '))
             parsed = {k: eval(v) for k, v in parts}
