@@ -9,11 +9,40 @@ import time
 
 
 class Sender(Dstream):
+    """
+    Class implementing zabbix_sender utility.
+
+    Parameters
+    ----------
+    :server:
+        IP address of target Zabbix Server.
+    :port:
+        Port on which the Zabbix Server listens.
+    :source_address:
+        Source IP address.
+    """
 
     def __init__(self, server, port=10051, source_address=None):
         super().__init__(server, port, source_address)
 
     def send_value(self, host, key, value):
+        """
+        Send a single value to a Zabbix host.
+
+        Parameters
+        ----------
+        :host:
+            Name of a host as visible in Zabbix frontend.
+        :key:
+            String representing an item key.
+        :value:
+            Value to be sent.
+
+        Returns
+        -------
+        string
+            Information from server.
+        """
         payload = {
             "request": "sender data",
             "data": []
@@ -26,6 +55,21 @@ class Sender(Dstream):
         return self._send(json.dumps(payload).encode("utf-8"))
 
     def send_file(self, file, with_timestamps=False):
+        """
+        Send values contained in a file to specified hosts.
+
+        Parameters
+        ----------
+        :file:
+            Path to file with data.
+        :with_timestamps:
+            Specify whether file contains timestamps for items.
+
+        Returns
+        -------
+        string
+            Information from server.
+        """
         return self._send(self._parse_file(file, with_timestamps))
 
     def _parse_file(self, file, with_timestamps=False):
