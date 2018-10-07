@@ -1,10 +1,9 @@
 """
 Project home:
-https://github.com/szuro/zappix
+https://gitlab.com/szuro/zappix
 """
 
 from setuptools import setup, find_packages
-from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
@@ -15,7 +14,7 @@ with open(path.join(here, 'README.md'), 'r', encoding='utf-8') as f:
 
 setup(
     name='zappix',
-    version='0.0.5',
+    version='0.0.6',
     description='A Python replacement for Zabbix sender and get.',
     long_description=long_description,
     long_description_content_type="text/markdown",

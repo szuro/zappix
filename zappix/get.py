@@ -1,3 +1,7 @@
+"""
+Python implementation of Zabbix get.
+"""
+
 from zappix.dstream import Dstream
 
 

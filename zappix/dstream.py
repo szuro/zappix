@@ -1,3 +1,7 @@
+"""
+Module containing handlers for Zabbix protocol.
+"""
+
 import socket
 import struct
 
