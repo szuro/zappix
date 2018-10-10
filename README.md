@@ -10,7 +10,7 @@ zappix requires Python3 and is guaranteed to work with 3.6.
 zappix is not dependant on any third party modules.
 The easiest way to install it with pip:
 ```sh
-pip install zabbix
+pip install zappix
 ```
 
 # Usage
