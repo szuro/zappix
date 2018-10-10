@@ -2,13 +2,13 @@
 Python implementation of Zabbix sender.
 """
 
-from zappix.dstream import Dstream
+from zappix.dstream import _Dstream
 import json
 import csv
 import time
 
 
-class Sender(Dstream):
+class Sender(_Dstream):
     """
     Class implementing zabbix_sender utility.
 

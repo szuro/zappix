@@ -2,10 +2,10 @@
 Python implementation of Zabbix get.
 """
 
-from zappix.dstream import Dstream
+from zappix.dstream import _Dstream
 
 
-class Get(Dstream):
+class Get(_Dstream):
     """
     Class implementing zabbix_get utility.
 

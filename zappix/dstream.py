@@ -2,11 +2,12 @@
 Module containing handlers for Zabbix protocol.
 """
 
+import abc
 import socket
 import struct
 
 
-class Dstream(object):
+class _Dstream(abc.ABC):
     def __init__(self, target, port=10051, source_address=None):
         self._ip = target
         self._port = port
