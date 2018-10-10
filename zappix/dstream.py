@@ -23,7 +23,7 @@ class Dstream(object):
 
             packed = self._prepare_payload(payload)
             s.sendall(packed)
-            data = s.recv(256)
+            data = self._recv_info(s)
             parsed = self._parse_response(data)
         except socket.error:
             print("Cannot connect to host.")
@@ -49,3 +49,11 @@ class Dstream(object):
             payload
             )
         return packed
+
+    def _recv_info(self, socket_, buff=1024):
+        data = b""
+        buffer = socket_.recv(buff)
+        while buffer:
+            data += buffer
+            buffer = socket_.recv(buff)
+        return data
