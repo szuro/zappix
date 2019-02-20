@@ -34,3 +34,7 @@ class GetValueWithBoundAddressTest(GetValueTest):
         self.agent = config['agent']['good']
 
         self.get = Get(self.agent, source_address=config['agent']['good'])
+
+
+if __name__ == '__main__':
+    unittest.main()
