@@ -16,12 +16,14 @@ class _Dstream(abc.ABC):
     def _send(self, payload):
         data = b""
         parsed = None
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         try:
             if self._source_address:
-                s.bind((self._source_address, 0))
-            s.connect((self._ip, self._port))
-
+                s = socket.create_connection(
+                    (self._ip, self._port),
+                    source_address=(self._ip, 0))
+            else:
+                s = socket.create_connection((self._ip, self._port))
             packed = self._prepare_payload(payload)
             s.sendall(packed)
             data = self._recv_info(s)
