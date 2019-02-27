@@ -16,7 +16,7 @@ class _Dstream(abc.ABC):
     def _send(self, payload):
         data = b""
         parsed = None
-
+        s = None
         try:
             if self._source_address:
                 s = socket.create_connection(
@@ -33,7 +33,8 @@ class _Dstream(abc.ABC):
         except struct.error:
             print("Invalid response.")
         finally:
-            s.close()
+            if s:
+                s.close()
             return parsed
 
     def _parse_response(self, response):
