@@ -1,17 +1,13 @@
 import unittest
-import configparser
-import os
 from zappix.get import Get
+
+
+zabbix_agent_address = 'zabbix-agent'
 
 
 class GetValueTest(unittest.TestCase):
     def setUp(self):
-        config = configparser.ConfigParser()
-        this_path = os.path.dirname(os.path.abspath(__file__))
-        config.read(os.path.join(this_path, 'test.ini'))
-        self.agent = config['agent']['good']
-
-        self.get = Get(self.agent)
+        self.get = Get(zabbix_agent_address)
 
     def test_get_value(self):
         resp = self.get.get_value("agent.ping")
@@ -28,12 +24,7 @@ class GetValueTest(unittest.TestCase):
 
 class GetValueWithBoundAddressTest(GetValueTest):
     def setUp(self):
-        config = configparser.ConfigParser()
-        this_path = os.path.dirname(os.path.abspath(__file__))
-        config.read(os.path.join(this_path, 'test.ini'))
-        self.agent = config['agent']['good']
-
-        self.get = Get(self.agent, source_address=config['agent']['good'])
+        self.get = Get(zabbix_agent_address, source_address='localhost')
 
 
 if __name__ == '__main__':
