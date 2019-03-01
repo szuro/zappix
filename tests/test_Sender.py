@@ -1,25 +1,71 @@
 import unittest
-import configparser
 import os
 import time
 import tempfile
+from pyzabbix import ZabbixAPI
 from zappix.sender import Sender
 
 
-class SenderValueTest(unittest.TestCase):
-    def setUp(self):
-        config = configparser.ConfigParser()
-        this_path = os.path.dirname(os.path.abspath(__file__))
-        config.read(os.path.join(this_path, 'test.ini'))
-        self.server = config['server']['good']
+zabbix_server_address = 'zabbix-server'
+zabbix_default_user = 'Admin'
+zabbix_default_password = 'zabbix'
 
-        self.sender = Sender(self.server)
 
+def create_host(zapi, hostname):
+    interface = {
+                "type": 1,
+                "main": 1,
+                "useip": 1,
+                "ip": "127.0.0.1",
+                "dns": "",
+                "port": "10050"
+            }
+
+    hosts = zapi.host.create(
+        host=hostname,
+        interfaces=[interface],
+        groups=[{"groupid": 2}]
+        )
+
+    return hosts['hostids'][0]
+
+
+def create_item(zapi, hostid):
+    zapi.item.create(
+        hostid=hostid,
+        key_='test',
+        name='test',
+        type=2,
+        value_type=3
+    )
+
+
+def remove_host(zapi, hostid):
+    zapi.host.delete(hostid)
+
+
+class _BaseSenderTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.sender = Sender(zabbix_server_address)
+        self.zapi = ZabbixAPI('http://' + zabbix_server_address)
+        self.zapi.login(zabbix_default_user, zabbix_default_password)
+        self.hostid = create_host(self.zapi, 'testhost')
+        create_item(self.zapi, self.hostid)
+
+    @classmethod
+    def tearDownClass(self):
+        remove_host(self.zapi, self.hostid)
+        self.zapi.user.logout()
+
+
+class SenderValueTest(_BaseSenderTest):
     def test_single_value(self):
         resp = self.sender.send_value('testhost', 'test', 1)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 1, "failed": 0, "total": 1})
 
+    @unittest.skip("Behaviour inconsistent across Zabbix versions")
     def test_bad_value(self):
         resp = self.sender.send_value('testhost', 'test', "bad_value")
         self.assertIsNotNone(resp.pop("seconds spent"))
@@ -36,25 +82,17 @@ class SenderValueTest(unittest.TestCase):
         self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
     def test_bad_server(self):
-        sender = Sender('127.0.0.2')
+        sender = Sender('nonexisting-server')
         resp = sender.send_value('testhost', 'test', 1)
         self.assertIsNone(resp)
 
     def test_bad_port(self):
-        sender = Sender(self.server, 666)
+        sender = Sender(zabbix_server_address, 666)
         resp = sender.send_value('testhost', 'test', 1)
         self.assertIsNone(resp)
 
 
-class SenderFileTest(unittest.TestCase):
-    def setUp(self):
-        config = configparser.ConfigParser()
-        this_path = os.path.dirname(os.path.abspath(__file__))
-        config.read(os.path.join(this_path, 'test.ini'))
-        self.server = config['server']['good']
-
-        self.sender = Sender(self.server)
-
+class SenderFileTest(_BaseSenderTest):
     def test_send_file(self):
         file_ = tempfile.NamedTemporaryFile('w+', delete=False)
         file_.write("testhost test 1\n"
@@ -106,9 +144,8 @@ class SenderFileTest(unittest.TestCase):
 
 class SenderValueWithBoundAddressTest(unittest.TestCase):
     def setUp(self):
-        config = configparser.ConfigParser()
-        this_path = os.path.dirname(os.path.abspath(__file__))
-        config.read(os.path.join(this_path, 'test.ini'))
-        self.server = config['server']['good']
+        self.sender = Sender(zabbix_server_address, source_address='localhost')
 
-        self.sender = Sender(self.server, source_address=config['agent']['good'])
+
+if __name__ == '__main__':
+    unittest.main()
