@@ -44,7 +44,7 @@ def remove_host(zapi, hostid):
     zapi.host.delete(hostid)
 
 
-class _BaseSenderTest(unittest.TestCase):
+class _BaseTestSender(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.sender = Sender(zabbix_server_address)
@@ -62,7 +62,7 @@ class _BaseSenderTest(unittest.TestCase):
         self.zapi.user.logout()
 
 
-class SenderValueTest(_BaseSenderTest):
+class TestSenderValue(_BaseTestSender):
     def test_single_value(self):
         resp = self.sender.send_value('testhost', 'test', 1)
         self.assertIsNotNone(resp.pop("seconds spent"))
@@ -95,7 +95,7 @@ class SenderValueTest(_BaseSenderTest):
         self.assertIsNone(resp)
 
 
-class SenderFileTest(_BaseSenderTest):
+class TestSenderFile(_BaseTestSender):
     def test_send_file(self):
         file_ = tempfile.NamedTemporaryFile('w+', delete=False)
         file_.write("testhost test 1\n"
@@ -145,7 +145,7 @@ class SenderFileTest(_BaseSenderTest):
         self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
 
 
-class SenderValueWithBoundAddressTest(unittest.TestCase):
+class TestSenderValueWithBoundAddress(unittest.TestCase):
     def setUp(self):
         self.sender = Sender(zabbix_server_address, source_address='localhost')
 

@@ -5,7 +5,7 @@ from zappix.get import Get
 zabbix_agent_address = 'zabbix-agent'
 
 
-class GetValueTest(unittest.TestCase):
+class TestGetValue(unittest.TestCase):
     def setUp(self):
         self.get = Get(zabbix_agent_address)
 
@@ -22,7 +22,7 @@ class GetValueTest(unittest.TestCase):
         self.assertDictEqual(resp, {'agent.ping': '1', 'agent.pong': 'ZBX_NOTSUPPORTED\x00Unsupported item key.'})
 
 
-class GetValueWithBoundAddressTest(GetValueTest):
+class TestGetValueWithBoundAddress(TestGetValue):
     def setUp(self):
         self.get = Get(zabbix_agent_address, source_address='localhost')
 
