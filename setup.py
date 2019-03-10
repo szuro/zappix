@@ -28,5 +28,6 @@ setup(
         'License :: OSI Approved :: MIT License',
     ],
     keywords='zabbix get sender',
-    packages=find_packages(exclude=['contrib', 'docs', 'tests'])
+    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    test_suite="tests"
 )
