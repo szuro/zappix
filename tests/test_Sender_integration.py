@@ -53,6 +53,9 @@ class _BaseSenderTest(unittest.TestCase):
         self.hostid = create_host(self.zapi, 'testhost')
         create_item(self.zapi, self.hostid)
 
+        CacheUpdateFrequency = 5
+        time.sleep(CacheUpdateFrequency)
+
     @classmethod
     def tearDownClass(self):
         remove_host(self.zapi, self.hostid)
