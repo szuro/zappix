@@ -9,6 +9,7 @@ stages:
 
 variables:
   ZBX_CACHEUPDATEFREQUENCY: 3
+  ZBX_SERVER_HOST: 0.0.0.0/0
 
 
 services:
