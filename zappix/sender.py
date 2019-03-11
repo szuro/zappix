@@ -6,6 +6,7 @@ from zappix.dstream import _Dstream
 import json
 import csv
 import time
+import functools
 
 
 class Sender(_Dstream):
@@ -74,6 +75,31 @@ class Sender(_Dstream):
         payload, corrupted_lines = self._parse_file(file, with_timestamps)
         response = self._send(payload)
         return self._parse_server_info(response), corrupted_lines
+
+    def send_result(self, host, key):
+        """
+        Decorator that sends a functions resoult to specified key on a host.
+
+        Parameters
+        ----------
+        :host:
+            Name of a host as visible in Zabbix frontend.
+        :key:
+            String representing an item key.
+
+        Returns
+        -------
+        dynamic
+            Result of decorated function.
+        """
+        def wrap_function(func):
+            @functools.wraps(func)
+            def get_value(*args, **kwargs):
+                result = func(*args, **kwargs)
+                self.send_value(host, key, str(result))
+                return result
+            return get_value
+        return wrap_function
 
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:

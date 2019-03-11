@@ -49,3 +49,20 @@ class TestSender(unittest.TestCase):
         os.unlink(file_.name)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
+
+    @patch('zappix.dstream.socket')
+    def test_send_decorator(self, mock_socket):
+        mock_socket.create_connection.return_value = self.msock
+        self.msock.recv.side_effect = [
+            b'ZBXD\x01', b'\x5b\x00\x00\x00\x00\x00\x00\x00',
+            b'{"response":"success", "info":"processed: 1; failed: 0; total: 1; seconds spent: 0.060753"}', b''
+            ]
+
+        sender = Sender('host')
+
+        @sender.send_result('testhost', 'test')
+        def echo(number):
+            return number
+
+        res = echo(2)
+        self.assertEqual(res, 2)
