@@ -159,7 +159,7 @@ class TestSenderDecorator(_BaseTestSender):
         def echo(number):
             return number
 
-        number = random.randint()
+        number = random.randint(1, 100)
         res = echo(number)
         self.assertEqual(res, number)
 
