@@ -152,5 +152,15 @@ class TestSenderValueWithBoundAddress(TestSenderValue):
         self.sender = Sender(zabbix_server_address, source_address=socket.gethostname())
 
 
+class TestSenderDecorator(_BaseTestSender):
+    def test_send_single_value(self):
+        @self.sender.send_result('testhost', 'test')
+        def echo(number):
+            return number
+
+        res = echo(2)
+        self.assertEqual(res, 2)
+
+
 if __name__ == '__main__':
     unittest.main()
