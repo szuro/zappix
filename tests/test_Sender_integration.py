@@ -2,6 +2,7 @@ import unittest
 import os
 import time
 import tempfile
+import socket
 from pyzabbix import ZabbixAPI
 from zappix.sender import Sender
 
@@ -147,7 +148,7 @@ class TestSenderFile(_BaseTestSender):
 
 class TestSenderValueWithBoundAddress(unittest.TestCase):
     def setUp(self):
-        self.sender = Sender(zabbix_server_address, source_address='localhost')
+        self.sender = Sender(zabbix_server_address, source_address=socket.gethostname())
 
 
 if __name__ == '__main__':

@@ -1,4 +1,5 @@
 import unittest
+import socket
 from zappix.get import Get
 
 
@@ -24,7 +25,7 @@ class TestGetValue(unittest.TestCase):
 
 class TestGetValueWithBoundAddress(TestGetValue):
     def setUp(self):
-        self.get = Get(zabbix_agent_address, source_address='localhost')
+        self.get = Get(zabbix_agent_address, source_address=socket.gethostname())
 
 
 if __name__ == '__main__':
