@@ -63,33 +63,33 @@ class _BaseTestSender(unittest.TestCase):
 
 
 class TestSenderValue(_BaseTestSender):
-    def test_single_value(self):
+    def test_send_single_value(self):
         resp = self.sender.send_value('testhost', 'test', 1)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 1, "failed": 0, "total": 1})
 
     @unittest.skip("Behaviour inconsistent across Zabbix versions")
-    def test_bad_value(self):
+    def test_send_bad_value(self):
         resp = self.sender.send_value('testhost', 'test', "bad_value")
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
-    def test_bad_key(self):
+    def test_send_bad_key(self):
         resp = self.sender.send_value('testhost', 'bad_key', 1)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
-    def test_bad_hostname(self):
+    def test_send_bad_hostname(self):
         resp = self.sender.send_value('bad_host', 'test', 1)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 0, "failed": 1, "total": 1})
 
-    def test_bad_server(self):
+    def test_send_bad_server(self):
         sender = Sender('nonexisting-server')
         resp = sender.send_value('testhost', 'test', 1)
         self.assertIsNone(resp)
 
-    def test_bad_port(self):
+    def test_send_bad_port(self):
         sender = Sender(zabbix_server_address, 666)
         resp = sender.send_value('testhost', 'test', 1)
         self.assertIsNone(resp)
