@@ -3,6 +3,7 @@ import os
 import time
 import tempfile
 import socket
+import random
 from pyzabbix import ZabbixAPI
 from zappix.sender import Sender
 
@@ -158,8 +159,9 @@ class TestSenderDecorator(_BaseTestSender):
         def echo(number):
             return number
 
-        res = echo(2)
-        self.assertEqual(res, 2)
+        number = random.randint()
+        res = echo(number)
+        self.assertEqual(res, number)
 
 
 if __name__ == '__main__':

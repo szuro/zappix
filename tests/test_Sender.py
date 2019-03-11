@@ -1,6 +1,7 @@
 import unittest
 import tempfile
 import os
+import random
 from unittest.mock import patch, MagicMock
 from zappix.sender import Sender
 
@@ -64,5 +65,6 @@ class TestSender(unittest.TestCase):
         def echo(number):
             return number
 
-        res = echo(2)
-        self.assertEqual(res, 2)
+        number = random.randint()
+        res = echo(number)
+        self.assertEqual(res, number)
