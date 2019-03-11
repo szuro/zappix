@@ -1,5 +1,6 @@
 import unittest
 import socket
+import os
 from zappix.get import Get
 
 
@@ -23,6 +24,7 @@ class TestGetValue(unittest.TestCase):
         self.assertDictEqual(resp, {'agent.ping': '1', 'agent.pong': 'ZBX_NOTSUPPORTED\x00Unsupported item key.'})
 
 
+@unittest.skipIf(True if os.environ.get('GITLAB_CI', '') else False, "Skipping on GitLab")
 class TestGetValueWithBoundAddress(TestGetValue):
     def setUp(self):
         self.get = Get(zabbix_agent_address, source_address=socket.gethostname())

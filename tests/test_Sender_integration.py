@@ -146,6 +146,7 @@ class TestSenderFile(_BaseTestSender):
         self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
 
 
+@unittest.skipIf(True if os.environ.get('GITLAB_CI', '') else False, "Skipping on GitLab")
 class TestSenderValueWithBoundAddress(TestSenderValue):
     def setUp(self):
         self.sender = Sender(zabbix_server_address, source_address=socket.gethostname())
