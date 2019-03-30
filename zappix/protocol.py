@@ -49,6 +49,7 @@ class _TrapperData(_Model, abc.ABC):
         if request not in _TrapperData.__supported_requests:
             raise ValueError
         self.request = request
+        self.host = kwargs.get('host')
         self.data = kwargs.get('data', [])
         if self.data:
             self._check_items_classes(self.data, kwargs.get('item_class'))
