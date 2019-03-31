@@ -71,7 +71,7 @@ class ActiveChecksRequest(_TrapperRequest):
 
 
 class SenderDataRequest(_TrapperRequest):
-    __item_class = 'SenderData'
+    __item_class = SenderData
 
     def __init__(self, data=[]):
         super().__init__(
@@ -86,7 +86,7 @@ class SenderDataRequest(_TrapperRequest):
 
 
 class AgentDataRequest(_TrapperRequest):
-    __item_class = 'AgentData'
+    __item_class = AgentData
 
     def __init__(self, data=[]):
         super().__init__(
