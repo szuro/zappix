@@ -40,13 +40,13 @@ class AgentData(ItemData):
         self.state = state
 
 
-class _TrapperData(_Model, abc.ABC):
+class _TrapperRequest(_Model, abc.ABC):
     __slots__ = ['request', 'data', 'host', 'clock', 'ns', 'session']
     __supported_requests = ["active checks", "agent data", "sender data"]
 
     def __init__(self, request, **kwargs):
         super().__init__()
-        if request not in _TrapperData.__supported_requests:
+        if request not in _TrapperRequest.__supported_requests:
             raise ValueError
         self.request = request
         self.host = kwargs.get('host')
@@ -65,12 +65,12 @@ class _TrapperData(_Model, abc.ABC):
         return isinstance(item, item_class)
 
 
-class ActiveChecksRequest(_TrapperData):
+class ActiveChecksRequest(_TrapperRequest):
     def __init__(self, host):
         super().__init__(request="active checks", host=host)
 
 
-class SenderDataRequest(_TrapperData):
+class SenderDataRequest(_TrapperRequest):
     __item_class = 'SenderData'
 
     def __init__(self, data):
@@ -85,7 +85,7 @@ class SenderDataRequest(_TrapperData):
         self.data.append(item)
 
 
-class AgentDataRequest(_TrapperData):
+class AgentDataRequest(_TrapperRequest):
     __item_class = 'AgentData'
 
     def __init__(self, data):
