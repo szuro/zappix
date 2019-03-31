@@ -83,7 +83,8 @@ class SenderDataRequest(_TrapperRequest):
             )
 
     def add_item(self, item):
-        self._check_item_class(item, SenderDataRequest.__item_class)
+        if not self._check_item_class(item, SenderDataRequest.__item_class):
+            raise ValueError
         self.data.append(item)
 
 
