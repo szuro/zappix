@@ -50,9 +50,11 @@ class _TrapperRequest(_Model, abc.ABC):
             raise ValueError
         self.request = request
         self.host = kwargs.get('host')
-        self.data = kwargs.get('data', [])
+        self.data = kwargs.get('data')
         if self.data:
             self._check_items_classes(self.data, kwargs.get('item_class'))
+        elif not self.data:
+            self.data = []
         self.clock = kwargs.get('clock')
         self.ns = kwargs.get('ns')
         self.session = kwargs.get('session')
