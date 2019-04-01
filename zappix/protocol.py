@@ -104,6 +104,7 @@ class AgentDataRequest(_TrapperRequest):
             self.item_id += 1
 
     def add_item(self, item):
-        self._check_item_class(item, AgentDataRequest.__item_class)
+        if not self._check_item_class(item, AgentDataRequest.__item_class):
+            raise ValueError
         self.data.append(item)
         self.item_id += 1
