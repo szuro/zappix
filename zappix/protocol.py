@@ -33,10 +33,10 @@ SenderData = ItemData
 class AgentData(ItemData):
     __slots__ = ItemData.__slots__ + ['ns', 'id', 'state']
 
-    def __init__(self, host, key, value, clock, ns, id=None, state=None):
+    def __init__(self, host, key, value, clock, ns, state=None):
         super().__init__(host, key, value, clock)
         self.ns = ns
-        self.id = id
+        self.id = 0
         self.state = state
 
 
