@@ -3,6 +3,7 @@ Module containing models for Zabbix protocol.
 """
 
 import abc
+import json
 
 
 class _Model(abc.ABC):
@@ -12,8 +13,13 @@ class _Model(abc.ABC):
         pass
 
     def __repr__(self):
-        d = {k: getattr(self, k) for k in type(self).__slots__ if getattr(self, k, False)}
-        return str(d)
+        return str(ModelEncoder().default(self))
+
+
+class ModelEncoder(json.JSONEncoder):
+    def default(self, o):
+        d = {k: getattr(o, k) for k in type(o).__slots__ if getattr(o, k, False)}
+        return d
 
 
 class ItemData(_Model):
