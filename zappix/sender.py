@@ -122,16 +122,6 @@ class Sender(_Dstream):
 
         return json.dumps(payload, cls=ModelEncoder).encode("utf-8"), failed_lines
 
-    def _create_payload(self, host, key, value, timestamp=None):
-        payload = {
-            "host": host,
-            "key": key,
-            "value": str(value)
-        }
-        if timestamp:
-            payload["clock"] = timestamp
-        return payload
-
     def _parse_server_info(self, resp):
         if resp:
             loaded = json.loads(resp)
