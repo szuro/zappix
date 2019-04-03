@@ -98,29 +98,29 @@ class Sender(_Dstream):
 
     def _parse_file(self, file, with_timestamps=False):
         with open(file, 'r', encoding='utf-8') as values:
-            payload = {"request": "sender data", "data": []}
+            payload = SenderDataRequest()
             reader = csv.reader(values, delimiter=' ', skipinitialspace=True)
             failed_lines = []
 
             for row in reader:
                 try:
                     if with_timestamps:
-                        data = self._create_payload(row[0], row[1], row[3], row[2])
+                        data = SenderData(row[0], row[1], row[2], row[3])
                     else:
-                        data = self._create_payload(row[0], row[1], row[2])
+                        data = SenderData(row[0], row[1], row[2])
                 except IndexError:
                     failed_lines.append(reader.line_num)
                 else:
                     if all(row):
-                        payload["data"].append(data)
+                        payload.add_item(data)
                     else:
                         failed_lines.append(reader.line_num)
         if with_timestamps:
             now = time.time()
-            payload["clock"] = int(now//1)
-            payload["ns"] = int(now % 1 * 1e9)
+            payload.clock = int(now//1)
+            payload.ns = int(now % 1 * 1e9)
 
-        return json.dumps(payload).encode("utf-8"), failed_lines
+        return json.dumps(payload, cls=ModelEncoder).encode("utf-8"), failed_lines
 
     def _create_payload(self, host, key, value, timestamp=None):
         payload = {
