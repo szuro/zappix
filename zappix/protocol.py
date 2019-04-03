@@ -17,12 +17,29 @@ class _Model(abc.ABC):
 
 
 class ModelEncoder(json.JSONEncoder):
+    """
+    Class for encoding to JSON models implemented herein.
+    """
     def default(self, o):
         d = {k: getattr(o, k) for k in type(o).__slots__ if getattr(o, k, False)}
         return d
 
 
 class ItemData(_Model):
+    """
+    Class model representing data to be sent to a trapper item.
+
+    Parameters
+    ----------
+    :host:
+        Hostname to which the item belongs.
+    :key:
+        Item key
+    :value:
+        Value to be sent.
+    :clock:
+        Timestamp at which value was collected.
+    """
     __slots__ = ['host', 'key', 'value', 'clock']
 
     def __init__(self, host, key, value, clock=None):
@@ -37,6 +54,26 @@ SenderData = ItemData
 
 
 class AgentData(ItemData):
+    """
+    Class model representing data to be sent to a Zabbix agent (active) item.
+
+    Parameters
+    ----------
+    :host:
+        Hostname to which the item belongs.
+    :key:
+        Item key
+    :value:
+        Value to be sent.
+    :clock:
+        Timestamp at which value was collected.
+    :ns:
+        Nanoseconds for clock
+    :id:
+        Unique id for item within one session.
+    :state:
+        State of an item. Set to 1 for Unsupported.
+    """
     __slots__ = ItemData.__slots__ + ['ns', 'id', 'state']
 
     def __init__(self, host, key, value, clock, ns, state=None):
@@ -74,11 +111,27 @@ class _TrapperRequest(_Model, abc.ABC):
 
 
 class ActiveChecksRequest(_TrapperRequest):
+    """
+    Class implementing protocol for requesting active checks for host.
+
+    Parameters
+    ----------
+    :host:
+        Get active checks for specified host.
+    """
     def __init__(self, host):
         super().__init__(request="active checks", host=host)
 
 
 class SenderDataRequest(_TrapperRequest):
+    """
+    Class implementing protocol for sending data with sender protocol.
+
+    Parameters
+    ----------
+    :data:
+        List of SenderData objects.
+    """
     __item_class = SenderData
 
     def __init__(self, data=None):
@@ -95,6 +148,15 @@ class SenderDataRequest(_TrapperRequest):
 
 
 class AgentDataRequest(_TrapperRequest):
+    """
+    Class implementing protocol for sending data gathered by active checks.
+    Each instance should be used as unique data session.
+
+    Parameters
+    ----------
+    :data:
+        List of AgentData objects.
+    """
     __item_class = AgentData
 
     def __init__(self, data=None):
