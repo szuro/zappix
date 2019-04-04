@@ -69,10 +69,13 @@ class AgentData(ItemData):
         Timestamp at which value was collected.
     :ns:
         Nanoseconds for clock
-    :id:
-        Unique id for item within one session.
     :state:
         State of an item. Set to 1 for Unsupported.
+
+    Attributes
+    ----------
+    :id:
+        Unique id for item within one session.
     """
     __slots__ = ItemData.__slots__ + ['ns', 'id', 'state']
 
