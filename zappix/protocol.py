@@ -177,10 +177,10 @@ class AgentDataRequest(_TrapperRequest):
             item_class=AgentDataRequest.__item_class
             )
 
-        self.item_id = 1
+        self._item_id = 1
         for d in self.data:
-            d.id = self.item_id
-            self.item_id += 1
+            d.id = self._item_id
+            self._item_id += 1
 
     def add_item(self, item):
         """
@@ -193,6 +193,6 @@ class AgentDataRequest(_TrapperRequest):
         """
         if not self._check_item_class(item, AgentDataRequest.__item_class):
             raise ValueError
-        item.id = self.item_id
+        item.id = self._item_id
         self.data.append(item)
-        self.item_id += 1
+        self._item_id += 1
