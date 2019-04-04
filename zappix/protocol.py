@@ -145,6 +145,14 @@ class SenderDataRequest(_TrapperRequest):
             )
 
     def add_item(self, item):
+        """
+        Add data to request.
+
+        Parameters
+        ----------
+        :item:
+            Instance of SenderData.
+        """
         if not self._check_item_class(item, SenderDataRequest.__item_class):
             raise ValueError
         self.data.append(item)
@@ -175,6 +183,14 @@ class AgentDataRequest(_TrapperRequest):
             self.item_id += 1
 
     def add_item(self, item):
+        """
+        Add data to request and assign an id to it.
+
+        Parameters
+        ----------
+        :item:
+            Instance of AgentData.
+        """
         if not self._check_item_class(item, AgentDataRequest.__item_class):
             raise ValueError
         item.id = self.item_id
