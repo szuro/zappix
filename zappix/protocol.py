@@ -4,6 +4,7 @@ Module containing models for Zabbix protocol.
 
 import abc
 import json
+from uuid import uuid4
 
 
 class _Model(abc.ABC):
@@ -174,7 +175,8 @@ class AgentDataRequest(_TrapperRequest):
         super().__init__(
             request="agent data",
             data=data,
-            item_class=AgentDataRequest.__item_class
+            item_class=AgentDataRequest.__item_class,
+            session=uuid4().hex
             )
 
         self._item_id = 1

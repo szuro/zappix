@@ -14,8 +14,12 @@ class TestAgentDataRequest(unittest.TestCase):
     def test_basic_init(self):
         agent_request = AgentDataRequest()
         self.assertIsInstance(agent_request, AgentDataRequest)
+
+        agent_request_dict = literal_eval(str(agent_request))
+        self.assertIsNotNone(agent_request_dict.pop('session', None))
+
         self.assertDictEqual(
-            literal_eval(str(agent_request)),
+            agent_request_dict,
             self.empty_agent
             )
 
@@ -24,9 +28,14 @@ class TestAgentDataRequest(unittest.TestCase):
             [AgentData('testhost', 'testkey', 1, 1554133179, 455816800),
              AgentData('testhost', 'testkey2', 10, 1554133279, 555816800)]
             )
+
         self.assertIsInstance(agent_request, AgentDataRequest)
+
+        agent_request_dict = literal_eval(str(agent_request))
+        self.assertIsNotNone(agent_request_dict.pop('session', None))
+
         self.assertDictEqual(
-            literal_eval(str(agent_request)),
+            agent_request_dict,
             self.agent_with_data
             )
 
@@ -36,16 +45,14 @@ class TestAgentDataRequest(unittest.TestCase):
 
     def test_add_item(self):
         agent_request = AgentDataRequest()
-
-        self.assertDictEqual(
-            literal_eval(str(agent_request)),
-            self.empty_agent
-            )
         agent_request.add_item(AgentData('testhost', 'testkey', 1, 1554133179, 455816800))
         agent_request.add_item(AgentData('testhost', 'testkey2', 10, 1554133279, 555816800))
 
+        agent_request_dict = literal_eval(str(agent_request))
+        self.assertIsNotNone(agent_request_dict.pop('session', None))
+
         self.assertDictEqual(
-            literal_eval(str(agent_request)),
+            agent_request_dict,
             self.agent_with_data
             )
 
