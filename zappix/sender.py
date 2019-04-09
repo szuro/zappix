@@ -71,7 +71,7 @@ class Sender(_Dstream):
             Information from server.
         """
         payload, corrupted_lines = self._parse_file(file, with_timestamps)
-        response = self._send(payload)
+        response = self._send(json.dumps(payload, cls=ModelEncoder).encode("utf-8"))
         return ServerResponse(response).info, corrupted_lines
 
     def send_result(self, host, key):
@@ -123,7 +123,7 @@ class Sender(_Dstream):
             payload.clock = int(now//1)
             payload.ns = int(now % 1 * 1e9)
 
-        return json.dumps(payload, cls=ModelEncoder).encode("utf-8"), failed_lines
+        return payload, failed_lines
 
 
 if __name__ == '__main__':
