@@ -3,7 +3,10 @@ Python implementation of Zabbix sender.
 """
 
 from zappix.dstream import _Dstream
-from zappix.protocol import SenderData, SenderDataRequest, ModelEncoder
+from zappix.protocol import (SenderData,
+                             SenderDataRequest,
+                             ModelEncoder,
+                             ServerResponse)
 import json
 import csv
 import time
@@ -42,14 +45,14 @@ class Sender(_Dstream):
 
         Returns
         -------
-        string
+        dict
             Information from server.
         """
         payload = SenderDataRequest()
         payload.add_item(SenderData(host, key, value))
 
         response = self._send(json.dumps(payload, cls=ModelEncoder).encode("utf-8"))
-        return self._parse_server_info(response)
+        return ServerResponse(response).info
 
     def send_file(self, file, with_timestamps=False):
         """
@@ -64,12 +67,12 @@ class Sender(_Dstream):
 
         Returns
         -------
-        string
+        dict
             Information from server.
         """
         payload, corrupted_lines = self._parse_file(file, with_timestamps)
         response = self._send(payload)
-        return self._parse_server_info(response), corrupted_lines
+        return ServerResponse(response).info, corrupted_lines
 
     def send_result(self, host, key):
         """
