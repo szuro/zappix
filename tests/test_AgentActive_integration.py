@@ -1,11 +1,7 @@
 import unittest
-import os
 import time
-import tempfile
-import socket
-import random
 from zappix.agent_active import AgentActive
-from zappix.protocol import ServerResponse, AgentDataRequest, AgentData
+from zappix.protocol import AgentDataRequest, AgentData
 from pyzabbix import ZabbixAPI
 from tests.utils import (zabbix_server_address,
                          zabbix_default_user,
