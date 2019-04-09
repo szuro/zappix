@@ -4,6 +4,7 @@ Module containing models for Zabbix protocol.
 
 import abc
 import json
+from ast import literal_eval
 from uuid import uuid4
 
 
@@ -198,3 +199,50 @@ class AgentDataRequest(_TrapperRequest):
         item.id = self._item_id
         self.data.append(item)
         self._item_id += 1
+
+
+class ActiveItem:
+    """
+    Zabbix active item configuration.
+    """
+
+    __slots__ = ['key', 'delay', 'lastlogsize', 'mtime']
+
+    def __init__(self, key, delay, lastlogsize=0, mtime=0):
+        self.key = key
+        self.delay = delay
+        self.lastlogsize = lastlogsize
+        self.mtime = mtime
+
+
+class ServerResponse:
+    """
+    Class representing server responses.
+    """
+    def __init__(self, response):
+        self.response = None
+        self.data = []
+        self.info = None
+        self._parse_response(response)
+
+    def _parse_data(self, data):
+        while data:
+            item = data.pop()
+            self.data.append(
+                ActiveItem(item['key'],
+                           item['delay'],
+                           item['lastlogsize'],
+                           item['mtime'])
+            )
+
+    def _parse_info(self, info):
+        if not info:
+            return None
+        parts = (part.split(':') for part in info.split(';'))
+        self.info = {k.strip(): literal_eval(v.strip()) for k, v in parts}
+
+    def _parse_response(self, response):
+        loaded = json.loads(response)
+        self.response = loaded['response']
+        self._parse_info(loaded.get('info', None))
+        self._parse_data(loaded.get('data', []))
