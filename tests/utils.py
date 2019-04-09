@@ -23,13 +23,15 @@ def create_host(zapi, hostname):
 
 
 def create_item(zapi, hostid, item_type=2):
-    zapi.item.create(
+    items = zapi.item.create(
         hostid=hostid,
         key_='test',
         name='test',
         type=item_type,
-        value_type=3
+        value_type=3,
+        delay=30
     )
+    return items['itemids'][0]
 
 
 def remove_host(zapi, hostid):
