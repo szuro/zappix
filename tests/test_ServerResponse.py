@@ -1,5 +1,4 @@
 import unittest
-from ast import literal_eval
 from zappix.protocol import ServerResponse
 
 
