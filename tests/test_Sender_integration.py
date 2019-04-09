@@ -4,46 +4,14 @@ import time
 import tempfile
 import socket
 import random
-from pyzabbix import ZabbixAPI
 from zappix.sender import Sender
-
-
-zabbix_server_address = 'zabbix-server'
-zabbix_default_user = 'Admin'
-zabbix_default_password = 'zabbix'
-
-
-def create_host(zapi, hostname):
-    interface = {
-                "type": 1,
-                "main": 1,
-                "useip": 1,
-                "ip": "127.0.0.1",
-                "dns": "",
-                "port": "10050"
-            }
-
-    hosts = zapi.host.create(
-        host=hostname,
-        interfaces=[interface],
-        groups=[{"groupid": 2}]
-        )
-
-    return hosts['hostids'][0]
-
-
-def create_item(zapi, hostid):
-    zapi.item.create(
-        hostid=hostid,
-        key_='test',
-        name='test',
-        type=2,
-        value_type=3
-    )
-
-
-def remove_host(zapi, hostid):
-    zapi.host.delete(hostid)
+from pyzabbix import ZabbixAPI
+from tests.utils import (zabbix_server_address,
+                         zabbix_default_user,
+                         zabbix_default_password,
+                         create_host,
+                         create_item,
+                         remove_host)
 
 
 class _BaseTestSender(unittest.TestCase):
