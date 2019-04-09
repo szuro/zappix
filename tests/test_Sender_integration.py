@@ -14,7 +14,7 @@ from tests.utils import (zabbix_server_address,
                          remove_host)
 
 
-class _BaseTestSender(unittest.TestCase):
+class _BaseIntegrationTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.sender = Sender(zabbix_server_address)
@@ -32,7 +32,7 @@ class _BaseTestSender(unittest.TestCase):
         self.zapi.user.logout()
 
 
-class TestSenderValue(_BaseTestSender):
+class TestSenderValue(_BaseIntegrationTest):
     def test_send_single_value(self):
         resp = self.sender.send_value('testhost', 'test', 1)
         self.assertIsNotNone(resp.pop("seconds spent"))
@@ -65,7 +65,7 @@ class TestSenderValue(_BaseTestSender):
         self.assertIsNone(resp)
 
 
-class TestSenderFile(_BaseTestSender):
+class TestSenderFile(_BaseIntegrationTest):
     def test_send_file(self):
         file_ = tempfile.NamedTemporaryFile('w+', delete=False)
         file_.write("testhost test 1\n"
@@ -121,7 +121,7 @@ class TestSenderValueWithBoundAddress(TestSenderValue):
         self.sender = Sender(zabbix_server_address, source_address=socket.gethostname())
 
 
-class TestSenderDecorator(_BaseTestSender):
+class TestSenderDecorator(_BaseIntegrationTest):
     def test_send_single_value(self):
         @self.sender.send_result('testhost', 'test')
         def echo(number):
