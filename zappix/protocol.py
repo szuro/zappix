@@ -242,7 +242,8 @@ class ServerResponse:
         self.info = {k.strip(): literal_eval(v.strip()) for k, v in parts}
 
     def _parse_response(self, response):
-        loaded = json.loads(response)
-        self.response = loaded['response']
-        self._parse_info(loaded.get('info', None))
-        self._parse_data(loaded.get('data', []))
+        if response:
+            loaded = json.loads(response)
+            self.response = loaded['response']
+            self._parse_info(loaded.get('info', None))
+            self._parse_data(loaded.get('data', []))
