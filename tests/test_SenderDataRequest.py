@@ -27,7 +27,7 @@ class TestSenderDataRequest(unittest.TestCase):
             )
 
     def test_init_with_invalid_data(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             SenderDataRequest([('testhost', 'testkey', 1)])
 
     def test_add_item(self):
@@ -43,6 +43,6 @@ class TestSenderDataRequest(unittest.TestCase):
             )
 
     def test_add_invalid_item(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             sender_request = SenderDataRequest()
             sender_request.add_item(('testhost', 'testkey', 1))

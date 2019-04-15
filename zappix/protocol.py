@@ -109,7 +109,7 @@ class _TrapperRequest(_Model, abc.ABC):
 
     def _check_items_classes(self, items, item_class):
         if not all(self._check_item_class(i, item_class) for i in items):
-            raise ValueError
+            raise TypeError
 
     def _check_item_class(self, item, item_class):
         return isinstance(item, item_class)
@@ -156,7 +156,7 @@ class SenderDataRequest(_TrapperRequest):
             Instance of SenderData.
         """
         if not self._check_item_class(item, SenderDataRequest.__item_class):
-            raise ValueError
+            raise TypeError
         self.data.append(item)
 
 
@@ -195,7 +195,7 @@ class AgentDataRequest(_TrapperRequest):
             Instance of AgentData.
         """
         if not self._check_item_class(item, AgentDataRequest.__item_class):
-            raise ValueError
+            raise TypeError
         item.id = self._item_id
         self.data.append(item)
         self._item_id += 1

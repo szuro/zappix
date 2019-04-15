@@ -40,7 +40,7 @@ class TestAgentDataRequest(unittest.TestCase):
             )
 
     def test_init_with_invalid_data(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             AgentDataRequest([('testhost', 'testkey', 1)])
 
     def test_add_item(self):
@@ -59,6 +59,6 @@ class TestAgentDataRequest(unittest.TestCase):
         self.assertListEqual([ar.id for ar in agent_request.data], [1, 2])
 
     def test_add_invalid_item(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             agent_request = AgentDataRequest()
             agent_request.add_item(('testhost', 'testkey', 1))
