@@ -38,15 +38,16 @@ class _Dstream(abc.ABC):
                 s.close()
             return parsed
 
-    def _parse_response(self, response):
+    def _parse_response(self, response: bytes) -> str:
         _, length = struct.unpack('<5sQ', response[:13])
         data = struct.unpack(
             '<{}s'.format(length),
             response[13:13+length]
-            )
-        return data[0].decode('utf-8')
+            )[0]
 
-    def _prepare_payload(self, payload):
+        return data.decode('utf-8')
+
+    def _prepare_payload(self, payload: bytes) -> bytes:
         packed = struct.pack(
             '<5sQ{}s'.format(len(payload)),
             b'ZBXD\x01',
@@ -55,7 +56,7 @@ class _Dstream(abc.ABC):
             )
         return packed
 
-    def _recv_info(self, socket_, buff=1024):
+    def _recv_info(self, socket_: socket.socket, buff: int = 1024) -> bytes:
         data = b""
         buffer = socket_.recv(buff)
         while buffer:

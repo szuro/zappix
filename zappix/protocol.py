@@ -23,7 +23,7 @@ class ModelEncoder(json.JSONEncoder):
     """
     Class for encoding to JSON models implemented herein.
     """
-    def default(self, o):
+    def default(self, o: _Model) -> Dict[str, Any]:
         d = {k: getattr(o, k) for k in type(o).__slots__ if getattr(o, k, False)}
         return d
 
@@ -99,7 +99,7 @@ class _TrapperRequest(_Model, abc.ABC):
             raise ValueError
         self.request = request
         self.host = kwargs.get('host')
-        self.data = kwargs.get('data')
+        self.data = kwargs.get('data', [])
         if self.data:
             self._check_items_classes(self.data, kwargs.get('item_class'))
         elif not self.data:
@@ -147,7 +147,7 @@ class SenderDataRequest(_TrapperRequest):
             item_class=SenderDataRequest.__item_class
             )
 
-    def add_item(self, item):
+    def add_item(self, item: SenderData) -> None:
         """
         Add data to request.
 
@@ -187,7 +187,7 @@ class AgentDataRequest(_TrapperRequest):
                 d.id = self._item_id
                 self._item_id += 1
 
-    def add_item(self, item):
+    def add_item(self, item: AgentData) -> None:
         """
         Add data to request and assign an id to it.
 
