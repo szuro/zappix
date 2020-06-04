@@ -1,4 +1,5 @@
-from zappix.protocol import ActiveChecksRequest, AgentDataRequest, ModelEncoder
+from typing import List, Optional
+from zappix.protocol import ActiveChecksRequest, AgentDataRequest, ModelEncoder, ActiveItem
 from zappix.protocol import ServerResponse
 from zappix.dstream import _Dstream
 import json
@@ -21,11 +22,11 @@ class AgentActive(_Dstream):
         Source IP address.
     """
 
-    def __init__(self, host, server, server_port=10051, source_address=None):
+    def __init__(self, host: str, server: str, server_port: int = 10051, source_address: Optional[str] = None) -> None:
         super().__init__(server, server_port, source_address)
         self._host = host
 
-    def get_active_checks(self):
+    def get_active_checks(self) -> List[ActiveItem]:
         """
         Gets list of active checks for host.
 
@@ -40,7 +41,7 @@ class AgentActive(_Dstream):
             )
         return ServerResponse(result).data
 
-    def send_collected_data(self, data):
+    def send_collected_data(self, data: AgentDataRequest) -> ServerResponse:
         """
         Sends collected data to Zabbix.
 
