@@ -2,7 +2,7 @@
 Module containing models for Zabbix protocol.
 """
 
-from typing import List
+from typing import List, Any, Optional
 import abc
 import json
 from ast import literal_eval
@@ -12,10 +12,10 @@ from uuid import uuid4
 class _Model(abc.ABC):
     __slots__: List[str] = []
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(ModelEncoder().default(self))
 
 
@@ -45,7 +45,7 @@ class ItemData(_Model):
     """
     __slots__ = ['host', 'key', 'value', 'clock']
 
-    def __init__(self, host, key, value, clock=None):
+    def __init__(self, host: str, key: str, value: Any, clock: Optional[int] = None) -> None:
         super().__init__()
         self.host = host
         self.key = key
@@ -82,7 +82,7 @@ class AgentData(ItemData):
     """
     __slots__ = ItemData.__slots__ + ['ns', 'id', 'state']
 
-    def __init__(self, host, key, value, clock, ns, state=None):
+    def __init__(self, host: str, key: str, value: Any, clock: int, ns: int, state: Optional[int] = None) -> None:
         super().__init__(host, key, value, clock)
         self.ns = ns
         self.id = 0
@@ -93,7 +93,7 @@ class _TrapperRequest(_Model, abc.ABC):
     __slots__ = ['request', 'data', 'host', 'clock', 'ns', 'session']
     __supported_requests = ["active checks", "agent data", "sender data"]
 
-    def __init__(self, request, **kwargs):
+    def __init__(self, request: str, **kwargs) -> None:
         super().__init__()
         if request not in _TrapperRequest.__supported_requests:
             raise ValueError
@@ -125,7 +125,7 @@ class ActiveChecksRequest(_TrapperRequest):
     :host:
         Get active checks for specified host.
     """
-    def __init__(self, host):
+    def __init__(self, host: str) -> None:
         super().__init__(request="active checks", host=host)
 
 
@@ -140,7 +140,7 @@ class SenderDataRequest(_TrapperRequest):
     """
     __item_class = SenderData
 
-    def __init__(self, data=None):
+    def __init__(self, data: Optional[List[SenderData]] = None) -> None:
         super().__init__(
             request="sender data",
             data=data,
@@ -173,7 +173,7 @@ class AgentDataRequest(_TrapperRequest):
     """
     __item_class = AgentData
 
-    def __init__(self, data=None):
+    def __init__(self, data: Optional[List[AgentData]] = None) -> None:
         super().__init__(
             request="agent data",
             data=data,
@@ -182,9 +182,10 @@ class AgentDataRequest(_TrapperRequest):
             )
 
         self._item_id = 1
-        for d in self.data:
-            d.id = self._item_id
-            self._item_id += 1
+        if self.data:
+            for d in self.data:
+                d.id = self._item_id
+                self._item_id += 1
 
     def add_item(self, item):
         """
@@ -209,7 +210,7 @@ class ActiveItem:
 
     __slots__ = ['key', 'delay', 'lastlogsize', 'mtime']
 
-    def __init__(self, key, delay, lastlogsize=0, mtime=0):
+    def __init__(self, key: str, delay: int, lastlogsize: int = 0, mtime: int = 0) -> None:
         self.key = key
         self.delay = delay
         self.lastlogsize = lastlogsize
@@ -220,9 +221,9 @@ class ServerResponse:
     """
     Class representing server responses.
     """
-    def __init__(self, response):
+    def __init__(self, response: str) -> None:
         self.response = None
-        self.data = []
+        self.data: List[ActiveItem] = []
         self.info = None
         self._parse_response(response)
 
