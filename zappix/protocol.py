@@ -10,7 +10,7 @@ from uuid import uuid4
 
 
 class _Model(abc.ABC):
-    __slots__ = List[str]
+    __slots__: List[str] = []
 
     def __init__(self):
         pass
