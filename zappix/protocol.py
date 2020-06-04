@@ -2,7 +2,7 @@
 Module containing models for Zabbix protocol.
 """
 
-from typing import List, Any, Optional
+from typing import List, Any, Optional, Dict
 import abc
 import json
 from ast import literal_eval
@@ -224,7 +224,7 @@ class ServerResponse:
     def __init__(self, response: str) -> None:
         self.response = None
         self.data: List[ActiveItem] = []
-        self.info = None
+        self.info: Dict[str, Any] = {}
         self._parse_response(response)
 
     def _parse_data(self, data):
