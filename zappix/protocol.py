@@ -2,6 +2,7 @@
 Module containing models for Zabbix protocol.
 """
 
+from typing import List
 import abc
 import json
 from ast import literal_eval
@@ -9,7 +10,7 @@ from uuid import uuid4
 
 
 class _Model(abc.ABC):
-    __slots__ = []
+    __slots__ = List[str]
 
     def __init__(self):
         pass
