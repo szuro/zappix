@@ -245,7 +245,7 @@ class ServerResponse:
         if not info:
             return None
         parts = (part.split(':') for part in info.split(';'))
-        self.info = {k.strip(): literal_eval(v.strip()) for k, v in parts}
+        self._info = {k.strip(): literal_eval(v.strip()) for k, v in parts}
 
     def _parse_response(self, response):
         if response:
