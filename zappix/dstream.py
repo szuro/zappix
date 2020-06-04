@@ -2,20 +2,21 @@
 Module containing handlers for Zabbix protocol.
 """
 
+from typing import Optional
 import abc
 import socket
 import struct
 
 
 class _Dstream(abc.ABC):
-    def __init__(self, target, port=10051, source_address=None):
+    def __init__(self, target: str, port: int = 10051, source_address: Optional[str] = None) -> None:
         self._ip = target
         self._port = port
         self._source_address = source_address
 
-    def _send(self, payload):
+    def _send(self, payload: bytes) -> str:
         data = b""
-        parsed = None
+        parsed = ""
         s = None
         try:
             if self._source_address:

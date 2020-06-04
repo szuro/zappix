@@ -2,7 +2,7 @@
 Python implementation of Zabbix sender.
 """
 
-from typing import List, Any, Optional, Dict, Tuple, Callable
+from typing import List, Any, Optional, Dict, Tuple, Callable, Union
 from zappix.dstream import _Dstream
 from zappix.protocol import (SenderData,
                              SenderDataRequest,
@@ -31,7 +31,7 @@ class Sender(_Dstream):
     def __init__(self, server: str, port: int = 10051, source_address: Optional[str] = None) -> None:
         super().__init__(server, port, source_address)
 
-    def send_value(self, host: str, key: str, value: Any) -> Dict[str,str]:
+    def send_value(self, host: str, key: str, value: Any) -> Union[Dict[str, Any], None]:
         """
         Send a single value to a Zabbix host.
 
@@ -55,7 +55,7 @@ class Sender(_Dstream):
         response = self._send(json.dumps(payload, cls=ModelEncoder).encode("utf-8"))
         return ServerResponse(response).info
 
-    def send_file(self, file: str, with_timestamps: bool = False) -> Tuple[Dict[str,str], List[int]]:
+    def send_file(self, file: str, with_timestamps: bool = False) -> Tuple[Union[Dict[str, Any], None], List[int]]:
         """
         Send values contained in a file to specified hosts.
 
