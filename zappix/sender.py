@@ -2,6 +2,7 @@
 Python implementation of Zabbix sender.
 """
 
+from typing import List, Any, Optional, Dict, Tuple, Callable
 from zappix.dstream import _Dstream
 from zappix.protocol import (SenderData,
                              SenderDataRequest,
@@ -27,10 +28,10 @@ class Sender(_Dstream):
         Source IP address.
     """
 
-    def __init__(self, server, port=10051, source_address=None):
+    def __init__(self, server: str, port: int = 10051, source_address: Optional[str] = None) -> None:
         super().__init__(server, port, source_address)
 
-    def send_value(self, host, key, value):
+    def send_value(self, host: str, key: str, value: Any) -> Dict[str,str]:
         """
         Send a single value to a Zabbix host.
 
@@ -54,7 +55,7 @@ class Sender(_Dstream):
         response = self._send(json.dumps(payload, cls=ModelEncoder).encode("utf-8"))
         return ServerResponse(response).info
 
-    def send_file(self, file, with_timestamps=False):
+    def send_file(self, file: str, with_timestamps: bool = False) -> Tuple[Dict[str,str], List[int]]:
         """
         Send values contained in a file to specified hosts.
 
@@ -74,7 +75,7 @@ class Sender(_Dstream):
         response = self._send(json.dumps(payload, cls=ModelEncoder).encode("utf-8"))
         return ServerResponse(response).info, corrupted_lines
 
-    def send_result(self, host, key):
+    def send_result(self, host: str, key: str) -> Any:
         """
         Decorator that sends a functions resoult to specified key on a host.
 
@@ -90,7 +91,7 @@ class Sender(_Dstream):
         dynamic
             Result of decorated function.
         """
-        def wrap_function(func):
+        def wrap_function(func: Callable) -> Callable:
             @functools.wraps(func)
             def get_value(*args, **kwargs):
                 result = func(*args, **kwargs)
@@ -99,7 +100,7 @@ class Sender(_Dstream):
             return get_value
         return wrap_function
 
-    def _parse_file(self, file, with_timestamps=False):
+    def _parse_file(self, file: str, with_timestamps: bool = False) -> Tuple[SenderDataRequest, List[int]]:
         with open(file, 'r', encoding='utf-8') as values:
             payload = SenderDataRequest()
             reader = csv.reader(values, delimiter=' ', skipinitialspace=True)
@@ -108,7 +109,7 @@ class Sender(_Dstream):
             for row in reader:
                 try:
                     if with_timestamps:
-                        data = SenderData(row[0], row[1], row[2], row[3])
+                        data = SenderData(row[0], row[1], row[2], int(row[3]))
                     else:
                         data = SenderData(row[0], row[1], row[2])
                 except IndexError:
