@@ -2,6 +2,7 @@
 Python implementation of Zabbix get.
 """
 
+from typing import List, Dict, Optional
 from zappix.dstream import _Dstream
 
 
@@ -19,10 +20,13 @@ class Get(_Dstream):
         Source IP address.
     """
 
-    def __init__(self, host, port=10050, source_address=None):
+    def __init__(self, host: str, port: int = 10050, source_address: Optional[str] = None) -> None:
         super().__init__(host, port, source_address)
 
-    def get_value(self, key):
+    def _pack_key(self, key: str) -> bytes:
+        return f"{key}\n".encode('utf-8')
+
+    def get_value(self, key: str) -> str:
         """
         Get value of a single item identified by key.
 
@@ -36,12 +40,12 @@ class Get(_Dstream):
         string
             Value of item.
         """
-        payload = key + "\n"
-        payload = payload.encode('utf-8')
 
-        return self._send(payload)
+        return self._send(
+            self._pack_key(key)
+            )
 
-    def get_report(self, keys):
+    def get_report(self, keys: List[str]) -> Dict[str, str]:
         """
         Get value of a single item identified by key.
 
@@ -56,7 +60,7 @@ class Get(_Dstream):
             Dict containing keys with corresponding values.
         """
 
-        report = {key: self._send((key + '\n').encode('utf-8')) for key in keys}
+        report = {key: self._send(self._pack_key(key)) for key in keys}
         return report
 
 

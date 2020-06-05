@@ -14,7 +14,7 @@ with open(path.join(here, 'README.md'), 'r', encoding='utf-8') as f:
 
 setup(
     name='zappix',
-    version='0.2.6',
+    version='0.3.0',
     description='A Python replacement for Zabbix sender and get.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -27,6 +27,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: System :: Monitoring',
         'License :: OSI Approved :: MIT License',
     ],

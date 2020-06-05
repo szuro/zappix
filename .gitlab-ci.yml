@@ -21,8 +21,9 @@ services:
 
 tests:
   script:
-    - pip install pyzabbix
+    - pip install pyzabbix mypy
     - python setup.py test
+    - mypy -p zappix
 
 
 pack:
