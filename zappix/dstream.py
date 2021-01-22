@@ -6,6 +6,9 @@ from typing import Optional
 import abc
 import socket
 import struct
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class _Dstream(abc.ABC):
@@ -30,9 +33,9 @@ class _Dstream(abc.ABC):
             data = self._recv_info(s)
             parsed = self._parse_response(data)
         except socket.error:
-            print("Cannot connect to host.")
+            logger.exception(f"Cannot connect to host:")
         except struct.error:
-            print("Invalid response.")
+            logger.exception(f"Recived response is corrupted:")
         finally:
             if s:
                 s.close()
