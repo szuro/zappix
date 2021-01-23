@@ -51,10 +51,11 @@ class _Dstream(abc.ABC):
         return data.decode('utf-8')
 
     def _prepare_payload(self, payload: bytes) -> bytes:
+        payload_len = len(payload)
         packed = struct.pack(
-            '<5sQ{}s'.format(len(payload)),
+            '<5sQ{}s'.format(payload_len),
             b'ZBXD\x01',
-            len(payload),
+            payload_len,
             payload
             )
         return packed
