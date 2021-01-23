@@ -28,7 +28,7 @@ class Get(_Dstream):
 
     def _pack_key(self, key: str) -> bytes:
         _key = f"{key}\n".encode('utf-8')
-        logging.debug(f"Getting {key} from {self._ip}:{self._port}")
+        logging.info(f"Getting {key} from {self._ip}:{self._port}")
         return _key
 
     def get_value(self, key: str) -> str:
