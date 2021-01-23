@@ -58,6 +58,7 @@ class _Dstream(abc.ABC):
             payload_len,
             payload
             )
+        logger.debug(f"Packed payload for {self._ip}:{self._port}. Payload length: {payload_len}. Length with headers: {len(packed)}")
         return packed
 
     def _recv_info(self, socket_: socket.socket, buff: int = 1024) -> bytes:
