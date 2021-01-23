@@ -26,8 +26,10 @@ class _Dstream(abc.ABC):
                 s = socket.create_connection(
                     (self._ip, self._port),
                     source_address=(self._ip, 0))
+                logger.info(f"Opening connection to {self._ip}:{self._port} with source address {self._source_address}")
             else:
                 s = socket.create_connection((self._ip, self._port))
+                logger.info(f"Opening connection to {self._ip}:{self._port}")
             packed = self._prepare_payload(payload)
             s.sendall(packed)
             data = self._recv_info(s)
@@ -38,6 +40,7 @@ class _Dstream(abc.ABC):
             logger.exception(f"Recived response is corrupted:")
         finally:
             if s:
+                logger.info(f"Closing connection to {self._ip}:{self._port}")
                 s.close()
             return parsed
 
