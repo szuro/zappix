@@ -33,7 +33,7 @@ class _Dstream(abc.ABC):
             data = self._recv_info(s)
             parsed = self._parse_response(data)
         except socket.error:
-            logger.exception(f"Cannot connect to host:")
+            logger.exception(f"Cannot connect to host {self._ip}:{self._port}:")
         except struct.error:
             logger.exception(f"Recived response is corrupted:")
         finally:
