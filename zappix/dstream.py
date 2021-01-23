@@ -62,7 +62,10 @@ class _Dstream(abc.ABC):
     def _recv_info(self, socket_: socket.socket, buff: int = 1024) -> bytes:
         data = b""
         buffer = socket_.recv(buff)
+        logger.debug(f"Received {len(buffer)} from {self._ip}:{self._port}")
         while buffer:
             data += buffer
             buffer = socket_.recv(buff)
+            logger.debug(f"Received {len(buffer)} from {self._ip}:{self._port}")
+        logger.debug(f"Completed data retrieval from {self._ip}:{self._port}. Total length: {len(data)}")
         return data
