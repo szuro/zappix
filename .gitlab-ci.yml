@@ -18,6 +18,9 @@ services:
 
 tests:
   image: ubuntu:bionic
+  variables:
+    DEBIAN_FRONTEND: "noninteractive"
+    DEBCONF_NONINTERACTIVE_SEEN: "true"
   before_script:
     - apt-get update
     - apt-get install -y software-properties-common
