@@ -52,7 +52,8 @@ class Get(_Dstream):
 
     def get_report(self, keys: List[str]) -> Dict[str, str]:
         """
-        Get value of a single item identified by key.
+        Get value of a item identified by keys provided in supplied iterable.
+        Note that there are executed synchronously, so the performance might not be ideal.
 
         Parameters
         ----------

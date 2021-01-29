@@ -32,7 +32,7 @@ Then you can send or get some data. Asuming both Zabbix Agent and Server run on 
 >>> getter.get_value("agent.ping")
 1
 >>> sender = Sender("127.0.0.1")
->>> sender.sender.send_value('testhost', 'test', 1)
+>>> sender.send_value('testhost', 'test', 1)
 {"processed": 1, "failed": 0, "total": 1, "seconds spent": 0.005}
 
 ```
