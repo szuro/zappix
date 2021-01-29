@@ -117,7 +117,7 @@ class Sender(_Dstream):
                         data = SenderData(row[0], row[1], row[2])
                 except (IndexError, ValueError):
                     failed_lines.append(reader.line_num)
-                    logger.exception(f"Could not parse line {reader.line_num}")
+                    logger.exception(f"Could not parse {file} at line {reader.line_num}")
                 else:
                     if all(row):
                         payload.add_item(data)
