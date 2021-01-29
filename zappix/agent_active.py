@@ -3,6 +3,9 @@ from zappix.protocol import ActiveChecksRequest, AgentDataRequest, ModelEncoder,
 from zappix.protocol import ServerResponse
 from zappix.dstream import _Dstream
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class AgentActive(_Dstream):
@@ -36,6 +39,7 @@ class AgentActive(_Dstream):
             List of ActiveItem objects.
         """
         request = ActiveChecksRequest(self._host)
+        logger.info(f"Getting active checks for host: {self._host} from: {self._ip}:{self._port}")
         result = self._send(
             json.dumps(request, cls=ModelEncoder).encode("utf-8")
             )
@@ -56,6 +60,7 @@ class AgentActive(_Dstream):
             List of ActiveItem objects.
         """
         if not isinstance(data, AgentDataRequest):
+            logger.error(f"Object {data} is not an instance AgentDataRequest")
             raise ValueError
         result = self._send(
             json.dumps(data, cls=ModelEncoder).encode("utf-8")
