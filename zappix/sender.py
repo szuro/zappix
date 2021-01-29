@@ -107,6 +107,7 @@ class Sender(_Dstream):
         with open(file, 'r', encoding='utf-8') as values:
             payload = SenderDataRequest()
             reader = csv.reader(values, delimiter=' ', skipinitialspace=True)
+            logger.info(f"Reading data from {file}")
             failed_lines = []
 
             for row in reader:
@@ -121,6 +122,7 @@ class Sender(_Dstream):
                 else:
                     if all(row):
                         payload.add_item(data)
+                        logger.debug(f"Adding {data} to Sender payload")
                     else:
                         failed_lines.append(reader.line_num)
         if with_timestamps:
