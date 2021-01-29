@@ -4,6 +4,9 @@ Python implementation of Zabbix get.
 
 from typing import List, Dict, Optional
 from zappix.dstream import _Dstream
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Get(_Dstream):
@@ -24,7 +27,9 @@ class Get(_Dstream):
         super().__init__(host, port, source_address)
 
     def _pack_key(self, key: str) -> bytes:
-        return f"{key}\n".encode('utf-8')
+        _key = f"{key}\n".encode('utf-8')
+        logging.info(f"Getting {key} from {self._ip}:{self._port}")
+        return _key
 
     def get_value(self, key: str) -> str:
         """

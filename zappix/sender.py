@@ -12,6 +12,9 @@ import json
 import csv
 import time
 import functools
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Sender(_Dstream):
@@ -104,6 +107,7 @@ class Sender(_Dstream):
         with open(file, 'r', encoding='utf-8') as values:
             payload = SenderDataRequest()
             reader = csv.reader(values, delimiter=' ', skipinitialspace=True)
+            logger.info(f"Reading data from {file}")
             failed_lines = []
 
             for row in reader:
@@ -114,9 +118,11 @@ class Sender(_Dstream):
                         data = SenderData(row[0], row[1], row[2])
                 except (IndexError, ValueError):
                     failed_lines.append(reader.line_num)
+                    logger.exception(f"Could not parse {file} at line {reader.line_num}")
                 else:
                     if all(row):
                         payload.add_item(data)
+                        logger.debug(f"Adding {data} to Sender payload")
                     else:
                         failed_lines.append(reader.line_num)
         if with_timestamps:
