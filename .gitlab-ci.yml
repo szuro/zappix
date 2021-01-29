@@ -20,7 +20,7 @@ tests:
   image: ubuntu:bionic
   before_script:
     - apt-get update
-    - apt-get install software-properties-common
+    - apt-get install -y software-properties-common
     - apt-get update
     - add-apt-repository -y ppa:deadsnakes/ppa
     - apt install -y python3.6 python3.7 python3.8 python3.9
