@@ -25,7 +25,7 @@ class _Dstream(abc.ABC):
             if self._source_address:
                 s = socket.create_connection(
                     (self._ip, self._port),
-                    source_address=(self._ip, 0))
+                    source_address=(self._source_address, 0))
                 logger.info(f"Opening connection to {self._ip}:{self._port} with source address {self._source_address}")
             else:
                 s = socket.create_connection((self._ip, self._port))
