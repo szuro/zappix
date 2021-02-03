@@ -103,6 +103,30 @@ class Sender(_Dstream):
             return get_value
         return wrap_function
 
+    def send_bulk(self, request: SenderDataRequest, with_timestams: bool = False):
+        """
+        Send item values to Zabbix in bulk.
+
+        Parameters
+        ----------
+        :request:
+            Path to file with data.
+        :with_timestamps:
+            Specify whether SenderData objects contain timestamps.
+
+        Returns
+        -------
+        dict
+            Information from server.
+        """
+        if with_timestams:
+            now = time.time()
+            request.clock = int(now//1)
+            request.ns = int(now % 1 * 1e9)
+
+        response = self._send(json.dumps(request, cls=ModelEncoder).encode("utf-8"))
+        return ServerResponse(response).info
+
     def _parse_file(self, file: str, with_timestamps: bool = False) -> Tuple[SenderDataRequest, List[int]]:
         with open(file, 'r', encoding='utf-8') as values:
             payload = SenderDataRequest()

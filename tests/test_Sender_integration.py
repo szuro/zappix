@@ -5,6 +5,7 @@ import tempfile
 import socket
 import random
 from zappix.sender import Sender
+from zappix.protocol import SenderDataRequest, SenderData
 from pyzabbix import ZabbixAPI
 from tests.utils import (zabbix_server_address,
                          zabbix_default_user,
@@ -111,6 +112,20 @@ class TestSenderFile(_BaseIntegrationTest):
         resp, corrupted_lines = self.sender.send_file(file_.name, with_timestamps=True)
         os.unlink(file_.name)
         self.assertSequenceEqual(corrupted_lines, [2, 3])
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
+
+
+class TestSenderBulk(_BaseIntegrationTest):
+    def test_send_bulk(self):
+        rq = SenderDataRequest(
+            [
+                SenderData('localhost', 'test', 1),
+                SenderData('Zabbix server', 'test', 20),
+            ]
+        )
+
+        resp = self.sender.send_bulk(rq)
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
 
