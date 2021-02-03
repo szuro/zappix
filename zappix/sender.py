@@ -113,7 +113,7 @@ class Sender(_Dstream):
             for row in reader:
                 try:
                     if with_timestamps:
-                        data = SenderData(row[0], row[1], row[2], int(row[3]))
+                        data = SenderData(row[0], row[1], row[3], int(row[2]))
                     else:
                         data = SenderData(row[0], row[1], row[2])
                 except (IndexError, ValueError):
