@@ -125,9 +125,12 @@ class TestSenderBulk(_BaseIntegrationTest):
             ]
         )
 
+        rq.add_item(SenderData('testhost', 'test', 300))
+
         resp = self.sender.send_bulk(rq)
         self.assertIsNotNone(resp.pop("seconds spent"))
-        self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
+        self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
+
 
 
 @unittest.skipIf(True if os.environ.get('GITLAB_CI', '') else False, "Skipping on GitLab")
