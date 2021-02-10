@@ -120,8 +120,8 @@ class TestSenderBulk(_BaseIntegrationTest):
     def test_send_bulk(self):
         rq = SenderDataRequest(
             [
-                SenderData('localhost', 'test', 1),
-                SenderData('Zabbix server', 'test', 20),
+                SenderData('testhost', 'test', 1),
+                SenderData('testhost', 'test', 20),
             ]
         )
 
