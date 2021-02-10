@@ -5,6 +5,7 @@ import tempfile
 import socket
 import random
 from zappix.sender import Sender
+from zappix.protocol import SenderDataRequest, SenderData
 from pyzabbix import ZabbixAPI
 from tests.utils import (zabbix_server_address,
                          zabbix_default_user,
@@ -113,6 +114,37 @@ class TestSenderFile(_BaseIntegrationTest):
         self.assertSequenceEqual(corrupted_lines, [2, 3])
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 2, "failed": 0, "total": 2})
+
+
+class TestSenderBulk(_BaseIntegrationTest):
+    def test_send_bulk(self):
+        rq = SenderDataRequest(
+            [
+                SenderData('testhost', 'test', 1),
+                SenderData('testhost', 'test', 20),
+            ]
+        )
+
+        rq.add_item(SenderData('testhost', 'test', 300))
+
+        resp = self.sender.send_bulk(rq)
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
+
+    def test_send_bulk_with_timestamp(self):
+        now = int(time.time()//1)
+        rq = SenderDataRequest(
+            [
+                SenderData('testhost', 'test', 1, now),
+                SenderData('testhost', 'test', 20, now + 1),
+            ]
+        )
+
+        rq.add_item(SenderData('testhost', 'test', 300, now + 2))
+
+        resp = self.sender.send_bulk(rq, with_timestams=True)
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
 
 @unittest.skipIf(True if os.environ.get('GITLAB_CI', '') else False, "Skipping on GitLab")

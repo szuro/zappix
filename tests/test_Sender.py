@@ -4,6 +4,7 @@ import os
 import random
 from unittest.mock import patch, MagicMock
 from zappix.sender import Sender
+from zappix.protocol import SenderDataRequest, SenderData
 
 
 class TestSender(unittest.TestCase):
@@ -68,3 +69,23 @@ class TestSender(unittest.TestCase):
         number = random.randint(1, 100)
         res = echo(number)
         self.assertEqual(res, number)
+
+    @patch('zappix.dstream.socket')
+    def test_send_bulk(self, mock_socket):
+        mock_socket.create_connection.return_value = self.msock
+        self.msock.recv.side_effect = [
+            b'ZBXD\x01', b'\x5b\x00\x00\x00\x00\x00\x00\x00',
+            b'{"response":"success", "info":"processed: 2; failed: 0; total: 2; seconds spent: 0.060753"}', b''
+            ]
+
+        rq = SenderDataRequest(
+            [
+                SenderData('localhost', 'test.key', 1),
+                SenderData('Zabbix server', 'test.key2', "test_value"),
+            ]
+        )
+
+        sender = Sender('host')
+        res = sender.send_bulk(rq)
+        self.msock.sendall.assert_called_with(b'ZBXD\x01\xa0\x00\x00\x00\x00\x00\x00\x00{"request": "sender data", "data": [{"host": "localhost", "key": "test.key", "value": 1}, {"host": "Zabbix server", "key": "test.key2", "value": "test_value"}]}')
+        self.assertDictEqual(res, {"processed": 2, "failed": 0, "total": 2, "seconds spent": 0.060753})
