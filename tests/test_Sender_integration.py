@@ -131,6 +131,20 @@ class TestSenderBulk(_BaseIntegrationTest):
         self.assertIsNotNone(resp.pop("seconds spent"))
         self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
+    def test_send_bulk_with_timestamp(self):
+        now = int(time.time()//1)
+        rq = SenderDataRequest(
+            [
+                SenderData('testhost', 'test', 1, now),
+                SenderData('testhost', 'test', 20, now + 1),
+            ]
+        )
+
+        rq.add_item(SenderData('testhost', 'test', 300, now + 2))
+
+        resp = self.sender.send_bulk(rq, with_timestams=True)
+        self.assertIsNotNone(resp.pop("seconds spent"))
+        self.assertDictEqual(resp, {"processed": 3, "failed": 0, "total": 3})
 
 
 @unittest.skipIf(True if os.environ.get('GITLAB_CI', '') else False, "Skipping on GitLab")
